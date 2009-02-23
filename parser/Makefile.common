@@ -1,0 +1,10 @@
+#
+# Common settings for all AwS Makefiles
+#
+
+LD = g++
+CPP = g++
+CFLAGS = -Wall -O2 -c
+
+.cpp.o:
+	$(CPP) $(INCLUDE) $(CFLAGS) $<

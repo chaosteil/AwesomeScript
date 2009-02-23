@@ -1,0 +1,46 @@
+/*
+ * some lame test cases
+ */
+
+function plus(a,b) return a + b;
+// Test
+
+/* Test function x */
+function x(f){
+	var a = false, b = f, c;
+	var c = 3 + 4;
+
+	c = 4;
+	y(c, 3);
+	d = y(1, 2);
+	var arr = [5, 3, 2, 4];
+	arr[1]++;
+	echo(d);
+	d = arr[0*2];
+
+	var test = 'mytest';
+	var associated = {'myKey': 2+3, 'another': 'value', a: [5, 4]};
+	
+	// Test
+	if(f - 2 == false){
+		if(plus(1, 2) == 3){
+			while(true){
+				break;
+			}
+			do{var j = 3;}while(false);
+			do var k; while(false);
+		}
+	}else if(5 + 1 == 6){
+		for(var i = 0, a = 0; i < 10; i++){
+			a += 2;
+			echo('this parses fine (\'really\')');
+		}
+		return true;
+	}else if(('yay
+		this is my multiline
+		text' <= 7) && (8 || -9) && (!f || 11*3/4)){ // This shouldn't make sense, but it should parse!
+		return null; // Equals return;
+	}
+
+	return f + 2;
+}
