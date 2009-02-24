@@ -15,6 +15,7 @@
 #include <string>
 
 #include "nodes/nodes.h"
+#include "reference.h"
 #include "token.h"
 #include "tokenizer.h"
 
@@ -95,6 +96,8 @@ namespace AwS{
 			void _skipToken(Token::TokenType type, const std::string& value) throw(Exception);
 			void _checkUnexpectedEnd() throw(Exception);
 
+			void _prepareReserved();
+
 			enum ParserState{
 				Default = 0, //!< We are in the global state
 				Function, //!< We are in a function
@@ -103,6 +106,7 @@ namespace AwS{
 			};
 			std::stack<ParserState> _states; //!< The state stack. Depending on the top value, the parser parses differemt statements.
 
+			Reference<std::string> _reserved;
 			//Reference<AwS::FunctionDefinition> _functions;
 			//Reference<AwS::Variable> _variables;
 

@@ -24,13 +24,15 @@ using namespace AwS::Nodes;
 Parser::Parser(std::istream& input, std::ostream& output)
 	: _tokenizer(NULL), _currentToken(NULL), _input(input), _output(output)
 {
+	// Prepare all the reserved words so variables and functions don't adapt weird names
+	_prepareReserved();
+
 	// Start tokenizer and read first token
 	_tokenizer = new Tokenizer(_input);
 	_readNextToken();
 
 	// Default state, should finish with only default state in stack
 	_states.push(Default);
-	
 }
 
 Parser::~Parser() throw(Exception){
@@ -134,6 +136,9 @@ Statement* Parser::_parseStatementFunction(){
 	if(_currentToken->getType() != Token::Word)
 		throw Exception(Exception::ParsingError, "Expected function name");
 	
+	if(_reserved.isDeclared(_currentToken->getValue()) == Reference<std::string>::IsDeclared)
+		throw Exception(Exception::ParsingError, "Using reserved word as function name");
+
 	std::string name = _currentToken->getValue();
 	_readNextToken();
 	_skipToken(Token::Symbol, "(");
@@ -144,6 +149,9 @@ Statement* Parser::_parseStatementFunction(){
 		if(_currentToken->getType() != Token::Word)
 			throw Exception(Exception::ParsingError, "Expected Variable");
 
+		if(_reserved.isDeclared(_currentToken->getValue()) == Reference<std::string>::IsDeclared)
+			throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+				
 		variables->push_back(new Variable(_currentToken->getValue()));
 		_readNextToken();
 
@@ -151,6 +159,10 @@ Statement* Parser::_parseStatementFunction(){
 			_readNextToken();
 			if(_currentToken->getType() != Token::Word)
 				throw Exception(Exception::ParsingError, "Expected Variable Name");
+
+			if(_reserved.isDeclared(_currentToken->getValue()) == Reference<std::string>::IsDeclared)
+				throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+
 			variables->push_back(new Variable(_currentToken->getValue()));
 			_readNextToken();
 		}
@@ -270,8 +282,12 @@ Statement* Parser::_parseStatementVar(){
 		if(_currentToken->getType() != Token::Word)
 			throw Exception(Exception::ParsingError, "Expected variable name after var statement.");
 		
+
 		// We get the name and check what follows
+		if(_reserved.isDeclared(_currentToken->getValue()) == Reference<std::string>::IsDeclared)
+			throw Exception(Exception::ParsingError, "Using reserved word as variable name");
 		std::string name = _currentToken->getValue();
+
 		_readNextToken();
 		_checkUnexpectedEnd();
 
@@ -316,6 +332,9 @@ Statement* Parser::_parseStatementVar(){
 }
 
 Statement* Parser::_parseStatementFunctionCallOrAssignment(){
+	if(_reserved.isDeclared(_currentToken->getValue()) == Reference<std::string>::IsDeclared)
+		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+
 	std::string name = _currentToken->getValue();
 	_readNextToken();
 	_checkUnexpectedEnd();
@@ -360,6 +379,9 @@ Statement* Parser::_parseStatementOperations(const Variable* name){
 }
 
 Statement* Parser::_parseStatementFunctionCall(const std::string& name){
+	if(_reserved.isDeclared(name) == Reference<std::string>::IsDeclared)
+		throw Exception(Exception::ParsingError, "Using reserved word as function name");
+
 	FunctionCall* call = _parseFunctionCall(name);
 
 	// If we are in the special statement state, we don't expect a ;
@@ -373,6 +395,9 @@ Statement* Parser::_parseStatementFunctionCall(const std::string& name){
 }
 
 Statement* Parser::_parseStatementArray(const std::string& name){
+	if(_reserved.isDeclared(name) == Reference<std::string>::IsDeclared)
+		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+
 	_readNextToken(); // Skip [
 	_checkUnexpectedEnd();
 
@@ -673,6 +698,9 @@ Expression* Parser::_parseExpressionGroup(){
 }
 
 Expression* Parser::_parseExpressionVariableOrFunctionCall(){
+	if(_reserved.isDeclared(_currentToken->getValue()) == Reference<std::string>::IsDeclared)
+		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+
 	std::string name = _currentToken->getValue();
 	_readNextToken();
 
@@ -767,6 +795,9 @@ Nodes::Assignment* Parser::_parseExpressionAssociativeArrayPair(){
 	if(_currentToken->getType() != Token::String && _currentToken->getType() != Token::Word)
 		throw Exception(Exception::ParsingError, "Expected key");
 
+	if(_reserved.isDeclared(_currentToken->getValue()) == Reference<std::string>::IsDeclared)
+		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+
 	Variable* var = new Variable(_currentToken->getValue());
 	_readNextToken();
 	_checkUnexpectedEnd();
@@ -781,6 +812,9 @@ Nodes::Assignment* Parser::_parseExpressionAssociativeArrayPair(){
 }
 
 Expression* Parser::_parseExpressionArrayAccess(const std::string& name){
+	if(_reserved.isDeclared(name) == Reference<std::string>::IsDeclared)
+		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+
 	_readNextToken(); // Skip [
 	_checkUnexpectedEnd();
 
@@ -792,6 +826,9 @@ Expression* Parser::_parseExpressionArrayAccess(const std::string& name){
 }
 
 FunctionCall* Parser::_parseFunctionCall(const std::string& name){
+	if(_reserved.isDeclared(name) == Reference<std::string>::IsDeclared)
+		throw Exception(Exception::ParsingError, "Using reserved word as function name");
+
 	_readNextToken(); // Skip '('
 	_checkUnexpectedEnd();
 
@@ -857,3 +894,27 @@ bool Parser::_isFinished(){
 	else
 		return false;
 }
+
+/*void Parser::_checkReserved(){
+}*/
+
+void Parser::_prepareReserved(){
+	_reserved.addDeclaration("function");
+	_reserved.addDeclaration("var");
+
+	_reserved.addDeclaration("if");
+	_reserved.addDeclaration("else");
+	_reserved.addDeclaration("while");
+	_reserved.addDeclaration("do");
+	_reserved.addDeclaration("for");
+
+	_reserved.addDeclaration("return");
+	_reserved.addDeclaration("continue");
+	_reserved.addDeclaration("break");
+
+	_reserved.addDeclaration("true");
+	_reserved.addDeclaration("false");
+	_reserved.addDeclaration("null");
+}
+
+#include "reference.cpp"
