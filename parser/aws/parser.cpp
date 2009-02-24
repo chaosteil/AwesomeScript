@@ -755,7 +755,14 @@ Expression* Parser::_parseExpressionArray(){
 
 		while(_currentToken->is(Token::Symbol, ",")){
 			_readNextToken();
-			arguments->push_back(_parseExpression());
+			_checkUnexpectedEnd();
+			if(_currentToken->is(Token::Symbol, "[")){
+				_parseExpressionArray();
+			}else if(_currentToken->is(Token::Symbol, "{")){
+				_parseExpressionAssociativeArray();
+			}else{
+				arguments->push_back(_parseExpression());
+			}
 			_checkUnexpectedEnd();
 		}
 		
