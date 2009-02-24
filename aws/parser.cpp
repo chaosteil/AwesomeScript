@@ -142,7 +142,8 @@ Statement* Parser::_parseStatementFunction(){
 	std::string name = _currentToken->getValue();
 	_readNextToken();
 	_skipToken(Token::Symbol, "(");
-
+	_checkUnexpectedEnd();
+	
 	std::list<Variable*>* variables = new std::list<Variable*>();
 
 	if(!_currentToken->is(Token::Symbol, ")")){
@@ -227,6 +228,7 @@ Statement* Parser::_parseStatementDoWhile(){
 	_states.pop();
 
 	_skipToken(Token::Word, "while");
+	_checkUnexpectedEnd();
 
 	if(!_currentToken->is(Token::Symbol, "("))
 		throw Exception(Exception::ParsingError, "Expected ( after while statement.");
@@ -242,6 +244,7 @@ Statement* Parser::_parseStatementFor(){
 	_readNextToken();
 
 	_skipToken(Token::Symbol, "(");
+	_checkUnexpectedEnd();
 
 	_states.push(SpecialStatement);
 	
@@ -264,6 +267,7 @@ Statement* Parser::_parseStatementFor(){
 	_states.pop();
 
 	_skipToken(Token::Symbol, ")");
+	_checkUnexpectedEnd();
 
 	_states.push(Loop);
 	Statement* block = readStatement();
