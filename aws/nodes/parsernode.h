@@ -9,6 +9,7 @@
  */
 
 #include <iostream>
+#include <ostream>
 
 namespace AwS{
 	namespace Nodes{
@@ -16,6 +17,8 @@ namespace AwS{
 			public:
 				ParserNode(){}
 				virtual ~ParserNode(){}
+
+				virtual void translatePhp(std::ostream& output) throw(Exception) = 0;
 		};
 	};
 };
