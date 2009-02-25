@@ -4,7 +4,7 @@
 
 LD = g++
 CPP = g++
-CFLAGS = -Wall -O2 -c
+CFLAGS = -Wall -O3 -s -c
 
 .cpp.o:
 	$(CPP) $(INCLUDE) $(CFLAGS) $<
