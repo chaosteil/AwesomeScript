@@ -5,7 +5,7 @@
 #include <queue>
 #include <time.h>
 
-#include "aws\aws.h"
+#include "aws/aws.h"
 
 // Implementation
 // * Convert source to tokens via tokenizer (V)
