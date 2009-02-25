@@ -22,10 +22,11 @@ using namespace AwS::Nodes;
  * ============================================================================*/
 
 Parser::Parser(std::istream& input, std::ostream& output)
-	: _tokenizer(NULL), _currentToken(NULL), _input(input), _output(output)
-{
+	: _variableScope(NULL), _tokenizer(NULL), _currentToken(NULL), _input(input), _output(output) {
 	// Prepare all the reserved words so variables and functions don't adapt weird names
 	_prepareReserved();
+	// Prepare required functions or variables the user has to use.
+	_prepareRequired();
 
 	// Start tokenizer and read first token
 	_tokenizer = new Tokenizer(_input);
@@ -145,6 +146,8 @@ Statement* Parser::_parseStatementFunction(){
 	_checkUnexpectedEnd();
 	
 	std::list<Variable*>* variables = new std::list<Variable*>();
+	if(_variableScope == NULL)
+		_variableScope = new Reference<std::string>();
 
 	if(!_currentToken->is(Token::Symbol, ")")){
 		if(_currentToken->getType() != Token::Word)
@@ -154,6 +157,7 @@ Statement* Parser::_parseStatementFunction(){
 			throw Exception(Exception::ParsingError, "Using reserved word as variable name");
 				
 		variables->push_back(new Variable(_currentToken->getValue()));
+		_variableScope->addDeclaration(_currentToken->getValue());
 		_readNextToken();
 
 		while(!_isFinished() && _currentToken->is(Token::Symbol, ",")){
@@ -165,6 +169,8 @@ Statement* Parser::_parseStatementFunction(){
 				throw Exception(Exception::ParsingError, "Using reserved word as variable name");
 
 			variables->push_back(new Variable(_currentToken->getValue()));
+			if(_variableScope->addDeclaration(_currentToken->getValue()) == Reference<std::string>::AlreadyDeclared)
+				throw Exception(Exception::ParsingError, "Variable cannot be declared twice in function header");
 			_readNextToken();
 		}
 		
@@ -172,11 +178,22 @@ Statement* Parser::_parseStatementFunction(){
 		if(!_currentToken->is(Token::Symbol, ")"))
 			throw Exception(Exception::ParsingError, "Incorrect function declaration");
 	}
+
+	Reference<std::pair<std::string, int> >::ReferenceStatus status = _functions.addDeclaration(std::pair<std::string, int>(name, variables->size()));
+	if(status == Reference<std::pair<std::string, int> >::AlreadyDeclared)
+		throw Exception(Exception::ParsingError, "Function already declared");
 	
 	_readNextToken();
+	_checkUnexpectedEnd();
+	
 	_states.push(Function);
 	Statement* statement = readStatement();
 	_states.pop();
+
+	if(_variableScope){
+		// TODO check if there are unused variables?
+		delete _variableScope; _variableScope = NULL;
+	}
 
 	return new FunctionDefinition(name, variables, statement);
 }
@@ -291,12 +308,13 @@ Statement* Parser::_parseStatementVar(){
 		if(_reserved.isDeclared(_currentToken->getValue()) == Reference<std::string>::IsDeclared)
 			throw Exception(Exception::ParsingError, "Using reserved word as variable name");
 		std::string name = _currentToken->getValue();
+		_variableScope->addDeclaration(name);
 
 		_readNextToken();
 		_checkUnexpectedEnd();
 
 		// We check if an init expression is assigned to the variable
-		Assignment* assignment  = NULL;
+		Assignment* assignment = NULL;
 		if(_currentToken->is(Token::Symbol, "=")){
 			_states.push(SpecialStatement);
 			assignment = static_cast<Assignment*>(_parseStatementAssignment(new Variable(name)));
@@ -349,6 +367,8 @@ Statement* Parser::_parseStatementFunctionCallOrAssignment(){
 	if(_currentToken->is(Token::Symbol, "["))
 		return _parseStatementArray(name);
 
+	if(_variableScope->addReference(name) != Reference<std::string>::AlreadyDeclared)
+		throw Exception(Exception::ParsingError, "Variable not declared");
 	return _parseStatementOperations(new Variable(name));
 
 	return NULL;
@@ -401,6 +421,7 @@ Statement* Parser::_parseStatementFunctionCall(const std::string& name){
 Statement* Parser::_parseStatementArray(const std::string& name){
 	if(_reserved.isDeclared(name) == Reference<std::string>::IsDeclared)
 		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+	_variableScope->addDeclaration(name);
 
 	_readNextToken(); // Skip [
 	_checkUnexpectedEnd();
@@ -706,11 +727,16 @@ Expression* Parser::_parseExpressionVariableOrFunctionCall(){
 		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
 
 	std::string name = _currentToken->getValue();
+
 	_readNextToken();
 
 	if(!_isFinished() && _currentToken->is(Token::Symbol, "("))
 		return _parseFunctionCall(name);
-	else if(!_isFinished() && _currentToken->is(Token::Symbol, "["))
+	
+	if(_variableScope->addReference(name) != Reference<std::string>::AlreadyDeclared)
+		throw Exception(Exception::ParsingError, "Variable was not declared before first use");
+
+	if(!_isFinished() && _currentToken->is(Token::Symbol, "["))
 		return _parseExpressionArrayAccess(name);
 	else
 		return new Variable(name);
@@ -807,9 +833,10 @@ Nodes::Assignment* Parser::_parseExpressionAssociativeArrayPair(){
 		throw Exception(Exception::ParsingError, "Expected key");
 
 	if(_reserved.isDeclared(_currentToken->getValue()) == Reference<std::string>::IsDeclared)
-		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+		throw Exception(Exception::ParsingError, "Using reserved word as key");
 
 	Variable* var = new Variable(_currentToken->getValue());
+
 	_readNextToken();
 	_checkUnexpectedEnd();
 	if(!_currentToken->is(Token::Symbol, ":"))
@@ -825,6 +852,9 @@ Nodes::Assignment* Parser::_parseExpressionAssociativeArrayPair(){
 Expression* Parser::_parseExpressionArrayAccess(const std::string& name){
 	if(_reserved.isDeclared(name) == Reference<std::string>::IsDeclared)
 		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+
+	if(_variableScope->addReference(name) != Reference<std::string>::AlreadyDeclared)
+		throw Exception(Exception::ParsingError, "Variable not declared before first use.");
 
 	_readNextToken(); // Skip [
 	_checkUnexpectedEnd();
@@ -906,9 +936,6 @@ bool Parser::_isFinished(){
 		return false;
 }
 
-/*void Parser::_checkReserved(){
-}*/
-
 void Parser::_prepareReserved(){
 	_reserved.addDeclaration("function");
 	_reserved.addDeclaration("var");
@@ -926,6 +953,11 @@ void Parser::_prepareReserved(){
 	_reserved.addDeclaration("true");
 	_reserved.addDeclaration("false");
 	_reserved.addDeclaration("null");
+}
+
+void Parser::_prepareRequired(){
+	// main function with no parameters
+	_functions.addReference(std::pair<std::string, int>("main", 0));
 }
 
 #include "reference.cpp"

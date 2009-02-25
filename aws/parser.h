@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <istream>
+#include <map>
 #include <ostream>
 #include <stack>
 #include <string>
@@ -97,6 +98,7 @@ namespace AwS{
 			void _checkUnexpectedEnd() throw(Exception);
 
 			void _prepareReserved();
+			void _prepareRequired();
 
 			enum ParserState{
 				Default = 0, //!< We are in the global state
@@ -107,8 +109,8 @@ namespace AwS{
 			std::stack<ParserState> _states; //!< The state stack. Depending on the top value, the parser parses differemt statements.
 
 			Reference<std::string> _reserved;
-			//Reference<AwS::FunctionDefinition> _functions;
-			//Reference<AwS::Variable> _variables;
+			Reference<std::pair<std::string, int> > _functions;
+			Reference<std::string>* _variableScope;
 
 			Tokenizer* _tokenizer;
 			Token* _currentToken;

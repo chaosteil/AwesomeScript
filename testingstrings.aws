@@ -9,10 +9,11 @@ function plus(a, b) return a + b;
 function x(f){
 	var a = false, b = f, c;
 	var c = 3 + 4;
+	var d;
 
 	c = 4;
 	y(c, 3);
-	d = y(1, 2);
+	f = y(1, 2);
 	var arr = [5, [3, 1], {extreme: 'gravity'}, 4];
 	arr[1]++;
 	echo(d);

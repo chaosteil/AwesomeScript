@@ -57,7 +57,7 @@ template<class T> typename Reference<T>::ReferenceStatus Reference<T>::addDeclar
 template<class T> typename Reference<T>::ReferenceStatus Reference<T>::addReference(const T item){
 	// Check if declared. If already declared, return.
 	if(isDeclared(item) == IsDeclared)
-		return;
+		return AlreadyDeclared;
 	
 	// Not returned, check if referenced. If not, add to list.
 	if(_isReferenced(item) == NotReferenced){
@@ -92,7 +92,7 @@ template<class T> typename Reference<T>::ReferenceStatus Reference<T>::_isRefere
 				return IsReferenced;
 		}
 		// If the variable is not referenced, it can still be declared
-		if(_isDeclared(item) != IsDeclared)
+		if(isDeclared(item) != IsDeclared)
 			return NotReferenced;
 		else
 			return IsDeclared;
