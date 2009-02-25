@@ -18,7 +18,7 @@ namespace AwS{
 				ParserNode(){}
 				virtual ~ParserNode(){}
 
-				virtual void translatePhp(std::ostream& output) throw(Exception) = 0;
+				virtual void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException) = 0;
 		};
 	};
 };

@@ -23,7 +23,7 @@ namespace AwS{
 					if(_left)delete _left;
 					if(_right)delete _right;
 				}
-				
+
 				const Expression* getLeft() const{ return _left; }
 				const Expression* getRight() const{ return _right; }
 			private:
