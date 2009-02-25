@@ -80,6 +80,14 @@ template<class T> typename Reference<T>::ReferenceStatus Reference<T>::isDeclare
 	return Error;
 }
 
+template<class T> const std::list<T>& Reference<T>::getDeclarations() const{
+	return *_declared;
+}
+template<class T> const std::list<T>& Reference<T>::getReferences() const{
+	return *_referenced;
+}
+
+
 /* ==============================================================================
  * P R I V A T E   M E T H O D S
  * ============================================================================*/

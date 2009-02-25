@@ -29,6 +29,8 @@ namespace AwS{
 			ReferenceStatus addDeclaration(const T item);
 			ReferenceStatus addReference(const T item);
 			ReferenceStatus isDeclared(const T& item) const;
+			const std::list<T>& getDeclarations() const;
+			const std::list<T>& getReferences() const;
 		private:
 			ReferenceStatus _isReferenced(const T& item) const;
 

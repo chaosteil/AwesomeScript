@@ -99,6 +99,7 @@ namespace AwS{
 
 			void _prepareReserved();
 			void _prepareRequired();
+			void _prepareLanguage();
 
 			enum ParserState{
 				Default = 0, //!< We are in the global state

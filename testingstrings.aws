@@ -5,6 +5,9 @@
 function plus(a, b) return a + b;
 // Test
 
+function main(){
+}
+
 /* Test function x */
 function x(f){
 	var a = false, b = f, c;

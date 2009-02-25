@@ -27,6 +27,8 @@ Parser::Parser(std::istream& input, std::ostream& output)
 	_prepareReserved();
 	// Prepare required functions or variables the user has to use.
 	_prepareRequired();
+	// Prepares all the language functions and available variables
+	_prepareLanguage();
 
 	// Start tokenizer and read first token
 	_tokenizer = new Tokenizer(_input);
@@ -43,6 +45,11 @@ Parser::~Parser() throw(Exception){
 	// We didn't left our state yet
 	if((_states.top() != Default))// TODO || !_functions.isClean())
 		throw Exception(Exception::SyntaxError, "Code is incomplete");
+	
+	std::list<std::pair<std::string, int> > functions = _functions.getReferences();
+	if(functions.size() > 0){
+		throw Exception(Exception::ParsingError, functions.front().first);
+	}
 
 	_states.pop();
 }
@@ -958,6 +965,10 @@ void Parser::_prepareReserved(){
 void Parser::_prepareRequired(){
 	// main function with no parameters
 	_functions.addReference(std::pair<std::string, int>("main", 0));
+}
+
+void Parser::_prepareLanguage(){
+	_functions.addDeclaration(std::pair<std::string, int>("echo", 1));
 }
 
 #include "reference.cpp"
