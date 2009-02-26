@@ -995,12 +995,28 @@ bool Parser::_FunctionReference::operator==(const _FunctionReference& reference)
 	if(reference.getName() == _name){
 		// Since this happens in the isDeclared method, the left one is the declaration, the right
 		// one is the reference. The right one has to have either equal or more references to pass
-		// as equal.
-		if(reference.getType() == Declaration) // We don't want no double declaration! Blasphemy!
+		// as equal. We of course must make sure the left one isn't a reference first.
+
+		// We don't want no double declaration! Blasphemy!
+		if(_type == Declaration && reference.getType() == Declaration) 
 			return true;
+
+		// Was the reference declared first?
+		if(_type == Reference && reference.getType() == Declaration)
+			if(_params < reference.getParams())
+				return false;
+			else
+				return true;
+
+		// Both references? We don't care then
+		if(_type == Reference && reference.getType() == Reference)
+			return false;
+
+		// Right one has to have more or equal amount of parameters
 		if(reference.getParams() >= _params)
 			return true;
-		return false;
+		else
+			return false;
 
 	}else
 		return false;

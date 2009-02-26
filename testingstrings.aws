@@ -6,6 +6,7 @@ function plus(a, b) return a + b;
 // Test
 
 function main(){
+	x(1);
 }
 
 function y(a, b){
