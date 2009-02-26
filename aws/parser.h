@@ -109,8 +109,47 @@ namespace AwS{
 			};
 			std::stack<ParserState> _states; //!< The state stack. Depending on the top value, the parser parses differemt statements.
 
+			//! FunctionReference class for managing function declarations and references.
+			/*!
+			 * Designed to work with the Reference<T> class and the AwesomeScript requirements.
+			 */
+			class _FunctionReference{
+				public:
+					//! Constructor
+					/*!
+					 * \param name The name of the function to declare or reference.
+					 * \param params The number of parameters the function has or will pass.
+					 */
+					_FunctionReference(std::string name, int params);
+					//! Destructor
+					~_FunctionReference();
+
+					//! Overloaded == operator
+					/*!
+					 * Works with the Reference<T> class to ensure that the referenced classes don't access less
+					 * parameters than they should. If more parameters than required are in a reference,
+					 * everything should be fine, but returns false if the declaration needs more.
+					 * \param reference The reference to compare to.
+					 */
+					bool operator==(const _FunctionReference& reference)const;
+
+					//! The name of the function.
+					/*!
+					 * \return The name of the declared or referenced function
+					 */
+					const std::string& getName() const;
+					//! Parameters.
+					/*!
+					 * \return The amount of parameters in this declaration or reference.
+					 */
+					int getParams() const;
+				private:
+					std::string _name; //!< Name of function.
+					int _params; //!< Amount of parameters in function declaration or reference.
+			};
+
 			Reference<std::string> _reserved;
-			Reference<std::pair<std::string, int> > _functions;
+			Reference<_FunctionReference> _functions;
 			Reference<std::string>* _variableScope;
 
 			Tokenizer* _tokenizer;

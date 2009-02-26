@@ -46,9 +46,9 @@ Parser::~Parser() throw(Exception){
 	if((_states.top() != Default))// TODO || !_functions.isClean())
 		throw Exception(Exception::SyntaxError, "Code is incomplete");
 	
-	std::list<std::pair<std::string, int> > functions = _functions.getReferences();
-	if(functions.size() > 0){
-		throw Exception(Exception::ParsingError, functions.front().first);
+	const std::list<_FunctionReference>* functions = _functions.getReferences();
+	if(functions && functions->size() > 0){
+		throw Exception(Exception::ParsingError, functions->front().getName());
 	}
 
 	_states.pop();
@@ -186,8 +186,8 @@ Statement* Parser::_parseStatementFunction(){
 			throw Exception(Exception::ParsingError, "Incorrect function declaration");
 	}
 
-	Reference<std::pair<std::string, int> >::ReferenceStatus status = _functions.addDeclaration(std::pair<std::string, int>(name, variables->size()));
-	if(status == Reference<std::pair<std::string, int> >::AlreadyDeclared)
+	Reference<_FunctionReference>::ReferenceStatus status = _functions.addDeclaration(_FunctionReference(name, variables->size()));
+	if(status == Reference<_FunctionReference>::AlreadyDeclared)
 		throw Exception(Exception::ParsingError, "Function already declared");
 	
 	_readNextToken();
@@ -893,6 +893,12 @@ FunctionCall* Parser::_parseFunctionCall(const std::string& name){
 		if(!_currentToken->is(Token::Symbol, ")"))
 			throw Exception(Exception::ParsingError, "Function call incorrect");
 	}
+	_functions.addReference(
+		_FunctionReference(
+			name,
+			arguments->size()
+			)
+		);
 
 	_readNextToken(); // Skip ')'
 	return new FunctionCall(name, arguments);
@@ -964,11 +970,49 @@ void Parser::_prepareReserved(){
 
 void Parser::_prepareRequired(){
 	// main function with no parameters
-	_functions.addReference(std::pair<std::string, int>("main", 0));
+	_functions.addReference(_FunctionReference("main", 0));
 }
 
 void Parser::_prepareLanguage(){
-	_functions.addDeclaration(std::pair<std::string, int>("echo", 1));
+	_functions.addDeclaration(_FunctionReference("echo", 1));
 }
 
-#include "reference.cpp"
+/* ==============================================================================
+ * _ F U N C T I O N R E F E R E N C E   PRIVATE CLASS
+ * ============================================================================*/
+
+Parser::_FunctionReference::_FunctionReference(std::string name, int params)
+	: _name(name), _params(params){
+}
+
+Parser::_FunctionReference::~_FunctionReference(){
+}
+
+bool Parser::_FunctionReference::operator==(const _FunctionReference& reference)const{
+	// We do seperate check for "main" function, as it must have zero parameters in all cases.
+	// This is because main is the entry point for the program, so it must absolutely
+	// conform to the specifications.
+	if(reference.getName() == "main")
+		if(reference.getParams() != 0)
+			return false;
+
+	// We check all the parameters we need
+	if(reference.getName() == _name){
+		// Since this happens in the isDeclared method, the left one is the declaration, the right
+		// one is the reference. The right one has to have either equal or more references to pass
+		// as equal.
+		if(reference.getParams() >= _params)
+			return true;
+		return false;
+
+	}else
+		return false;
+}
+
+const std::string& Parser::_FunctionReference::getName() const{
+	return _name;
+}
+
+int Parser::_FunctionReference::getParams() const{
+	return _params;
+}
