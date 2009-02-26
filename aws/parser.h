@@ -115,12 +115,18 @@ namespace AwS{
 			 */
 			class _FunctionReference{
 				public:
+					enum Type{
+						Declaration = 0,
+						Reference
+					};
+
 					//! Constructor
 					/*!
 					 * \param name The name of the function to declare or reference.
 					 * \param params The number of parameters the function has or will pass.
+					 * \param type The type of the reference. Is it a declaration or a call?
 					 */
-					_FunctionReference(std::string name, int params);
+					_FunctionReference(std::string name, int params, Type type);
 					//! Destructor
 					~_FunctionReference();
 
@@ -143,9 +149,16 @@ namespace AwS{
 					 * \return The amount of parameters in this declaration or reference.
 					 */
 					int getParams() const;
+
+					//! Type.
+					/*!
+					 * \return The type of the function on initialization.
+					 */
+					Type getType() const;
 				private:
 					std::string _name; //!< Name of function.
 					int _params; //!< Amount of parameters in function declaration or reference.
+					Type _type; //!< The type of the function declaration or call.
 			};
 
 			Reference<std::string> _reserved;

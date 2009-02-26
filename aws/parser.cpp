@@ -186,7 +186,7 @@ Statement* Parser::_parseStatementFunction(){
 			throw Exception(Exception::ParsingError, "Incorrect function declaration");
 	}
 
-	Reference<_FunctionReference>::ReferenceStatus status = _functions.addDeclaration(_FunctionReference(name, variables->size()));
+	Reference<_FunctionReference>::ReferenceStatus status = _functions.addDeclaration(_FunctionReference(name, variables->size(), _FunctionReference::Declaration));
 	if(status == Reference<_FunctionReference>::AlreadyDeclared)
 		throw Exception(Exception::ParsingError, "Function already declared");
 	
@@ -893,12 +893,7 @@ FunctionCall* Parser::_parseFunctionCall(const std::string& name){
 		if(!_currentToken->is(Token::Symbol, ")"))
 			throw Exception(Exception::ParsingError, "Function call incorrect");
 	}
-	_functions.addReference(
-		_FunctionReference(
-			name,
-			arguments->size()
-			)
-		);
+	_functions.addReference(_FunctionReference(name, arguments->size(), _FunctionReference::Reference));
 
 	_readNextToken(); // Skip ')'
 	return new FunctionCall(name, arguments);
@@ -970,19 +965,19 @@ void Parser::_prepareReserved(){
 
 void Parser::_prepareRequired(){
 	// main function with no parameters
-	_functions.addReference(_FunctionReference("main", 0));
+	_functions.addReference(_FunctionReference("main", 0, _FunctionReference::Reference));
 }
 
 void Parser::_prepareLanguage(){
-	_functions.addDeclaration(_FunctionReference("echo", 1));
+	_functions.addDeclaration(_FunctionReference("echo", 1, _FunctionReference::Declaration));
 }
 
 /* ==============================================================================
  * _ F U N C T I O N R E F E R E N C E   PRIVATE CLASS
  * ============================================================================*/
 
-Parser::_FunctionReference::_FunctionReference(std::string name, int params)
-	: _name(name), _params(params){
+Parser::_FunctionReference::_FunctionReference(std::string name, int params, Type type)
+	: _name(name), _params(params), _type(type){
 }
 
 Parser::_FunctionReference::~_FunctionReference(){
@@ -1001,6 +996,8 @@ bool Parser::_FunctionReference::operator==(const _FunctionReference& reference)
 		// Since this happens in the isDeclared method, the left one is the declaration, the right
 		// one is the reference. The right one has to have either equal or more references to pass
 		// as equal.
+		if(reference.getType() == Declaration) // We don't want no double declaration! Blasphemy!
+			return true;
 		if(reference.getParams() >= _params)
 			return true;
 		return false;
@@ -1015,4 +1012,8 @@ const std::string& Parser::_FunctionReference::getName() const{
 
 int Parser::_FunctionReference::getParams() const{
 	return _params;
+}
+
+Parser::_FunctionReference::Type Parser::_FunctionReference::getType() const{
+	return _type;
 }
