@@ -22,6 +22,7 @@ namespace AwS{
 				virtual ~NullConstant(){}
 				
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "null";
 				}
 		};
 	};

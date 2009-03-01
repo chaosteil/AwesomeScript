@@ -26,6 +26,7 @@ namespace AwS{
 				const std::string& getContent() const{return _content; }
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "'" << _content << "'";
 				}
 			private:
 				const std::string _content;

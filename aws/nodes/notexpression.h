@@ -22,6 +22,8 @@ namespace AwS{
 				virtual ~NotExpression(){}
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "!";
+					getValue()->translatePhp(output, settings);
 				}
 		};
 	};
