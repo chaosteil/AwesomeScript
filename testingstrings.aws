@@ -19,6 +19,7 @@ function x(f){
 	d = arr[0*2];
 	var test = 'mytest';
 	var associated = {'myKey': 2+3, 'another': 'value', a: [5, 4]};
+	associated['a'][0][1][2][3][4] = 1;
 	
 	// Test
 	if(f - 2 == false){

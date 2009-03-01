@@ -43,7 +43,7 @@ namespace AwS{
 							output << ", " << std::endl;
 
 						output << "'" << (*i)->getVariable()->getName() << "'";
-						output << ": ";
+						output << " => ";
 						(*i)->getValue()->translatePhp(output, settings);
 
 						begin = false;

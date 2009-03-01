@@ -8,6 +8,7 @@
  * Email: Chaosteil@gmail.com
  */
 
+#include <list>
 #include <string>
 
 #include "expression.h"
@@ -16,7 +17,7 @@ namespace AwS{
 	namespace Nodes{
 		class Variable : public Expression{
 			public:
-				Variable(const std::string& name, Expression* index = NULL)
+				Variable(const std::string& name, std::list<Expression*>* index = NULL)
 					: Expression(), _name(name), _index(index){
 					
 					std::cout << "Variable " << name << std::endl;
@@ -26,19 +27,21 @@ namespace AwS{
 				}
 				
 				const std::string& getName() const{ return _name; }
-				const Expression* getIndex() const{ return _index; }
+				const std::list<Expression*>* getIndex() const{ return _index; }
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
 					output << "$" << settings.getVarPrefix() << _name;
 					if(_index != NULL){
-						output << "[";
-						_index->translatePhp(output, settings);
-						output << "]";
+						for(std::list<Expression*>::const_iterator i = _index->begin(); i != _index->end(); ++i){
+							output << "[";
+							(*i)->translatePhp(output, settings);
+							output << "]";
+						}
 					}
 				}
 			private:
 				const std::string _name;
-				const Expression* _index;
+				const std::list<Expression*>* _index;
 		};
 	};
 };
