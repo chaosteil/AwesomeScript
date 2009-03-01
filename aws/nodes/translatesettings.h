@@ -21,11 +21,7 @@ namespace AwS{
 				~TranslateSettings(){}
 
 				const std::string& getVarPrefix() const{ return _varPrefix; }
-				const std::string& getFunctionPrefix() const{
-					if(_funcPrefix == "" && _varPrefix != "")
-						return _varPrefix;
-					else
-						return _funcPrefix;
+				const std::string& getFunctionPrefix() const{ return _funcPrefix; }
 				}
 
 				void setIgnoreSemicolon(bool ignore){ _ignore = ignore; }

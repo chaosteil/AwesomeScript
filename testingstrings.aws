@@ -15,7 +15,6 @@ function x(f){
 	d = y(1, 2);
 	var arr = [5, [3, 1], {extreme: 'gravity'}, 4];
 	arr[1]++;
-	echo(d);
 	echo(c);
 	d = arr[0*2];
 	var test = 'mytest';
