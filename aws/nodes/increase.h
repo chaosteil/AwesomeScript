@@ -19,8 +19,6 @@ namespace AwS{
 			public:
 				Increase(const Variable* var)
 					: Statement(), _var(var){
-						
-					std::cout << "Increase" << std::endl;
 				}
 				virtual ~Increase(){
 					if(_var)delete _var;

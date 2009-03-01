@@ -19,8 +19,6 @@ namespace AwS{
 			public:
 				Assignment(const Variable* var, const Expression* value)
 					: Statement(), _var(var), _value(value){
-					
-					std::cout << "Assignment" << std::endl;
 				}
 				virtual ~Assignment(){
 					if(_var)delete _var;

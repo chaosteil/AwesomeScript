@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				BreakStatement()
 					: Statement(){
-
-					std::cout << "BreakStatement" << std::endl;
 				}
 
 				virtual ~BreakStatement(){}

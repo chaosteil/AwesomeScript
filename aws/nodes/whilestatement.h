@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				WhileStatement(Expression* expression, Statement* statement)
 					: Statement(), _expression(expression), _statement(statement){
-					
-					std::cout << "WhileStatement" << std::endl;
 				}
 				virtual ~WhileStatement(){
 					if(_expression)delete _expression;

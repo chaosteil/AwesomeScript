@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				DoWhileStatement(Expression* expression, Statement* statement)
 					: Statement(), _expression(expression), _statement(statement){
-					
-					std::cout << "DoWhileStatement" << std::endl;
 				}
 				virtual ~DoWhileStatement(){
 					if(_expression)delete _expression;

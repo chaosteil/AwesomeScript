@@ -19,8 +19,6 @@ namespace AwS{
 			public:
 				FunctionCall(const std::string& name, std::list<Expression*>* content)
 					: Expression(), _name(name), _content(content){
-						
-					std::cout << "FunctionCall " << name <<  std::endl;
 				}
 				virtual ~FunctionCall(){
 					if(_content){

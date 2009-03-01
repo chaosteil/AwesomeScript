@@ -20,8 +20,6 @@ namespace AwS{
 			public:
 				ModulusEqual(const Variable* var, const Expression* value)
 					: Statement(), _var(var), _value(value){
-						
-					std::cout << "ModulusEqual" << std::endl;
 				}
 				virtual ~ModulusEqual(){
 					if(_var)delete _var;

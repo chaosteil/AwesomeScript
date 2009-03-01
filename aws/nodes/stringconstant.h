@@ -18,8 +18,6 @@ namespace AwS{
 			public:
 				StringConstant(const std::string& content)
 					: Expression(), _content(content){
-						
-					std::cout << "String " << _content << std::endl;
 				}
 				virtual ~StringConstant(){}
 

@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				Addition(Expression* left, Expression* right)
 					: BinaryExpression(left, right){
-
-					std::cout << "Addition" << std::endl;
 				}
 				virtual ~Addition(){}
 

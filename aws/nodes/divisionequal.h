@@ -20,8 +20,6 @@ namespace AwS{
 			public:
 				DivisionEqual(const Variable* var, const Expression* value)
 					: Statement(), _var(var), _value(value){
-					
-					std::cout << "DivisionEqual" << std::endl;
 				}
 				virtual ~DivisionEqual(){
 					if(_var)delete _var;

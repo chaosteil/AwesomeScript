@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				NullConstant()
 					: Expression(){
-					
-					std::cout << "Null" << std::endl;
 				}
 				virtual ~NullConstant(){}
 				

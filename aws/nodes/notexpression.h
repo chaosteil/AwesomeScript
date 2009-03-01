@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				NotExpression(Expression* value)
 					: UnaryExpression(value){
-						
-					std::cout << "NotExpression" << std::endl;
 				}
 				virtual ~NotExpression(){}
 

@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				Negation(Expression* value)
 					: UnaryExpression(value){
-						
-					std::cout << "Negation" << std::endl;
 				}
 				virtual ~Negation(){}
 

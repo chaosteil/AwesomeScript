@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				ContinueStatement()
 					: Statement(){
-						
-					std::cout << "ContinueStatement" << std::endl;
 				}
 				virtual ~ContinueStatement(){}
 

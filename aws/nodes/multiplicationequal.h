@@ -20,8 +20,6 @@ namespace AwS{
 			public:
 				MultiplicationEqual(const Variable* var, const Expression* value)
 					: Statement(), _var(var), _value(value){
-					
-					std::cout << "MultiplicationEqual" << std::endl;
 				}
 				virtual ~MultiplicationEqual(){
 					if(_var)delete _var;

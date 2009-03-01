@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				ReturnStatement(const Expression* content)
 					: Statement(), _content(content){
-						
-					std::cout << "ReturnStatement" << std::endl;
 				}
 				virtual ~ReturnStatement(){
 					if(_content)delete _content;

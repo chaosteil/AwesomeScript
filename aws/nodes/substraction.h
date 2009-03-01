@@ -17,8 +17,6 @@ namespace AwS{
 			public:
 				Substraction(Expression* left, Expression* right)
 					: BinaryExpression(left, right){
-						
-					std::cout << "Substraction" << std::endl;
 				}
 				virtual ~Substraction(){}
 

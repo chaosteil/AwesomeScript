@@ -20,8 +20,6 @@ namespace AwS{
 				ForStatement(const Statement* begin, const Expression* eval,
 					const Statement* end, const Statement* block)
 					: Statement(), _begin(begin), _eval(eval), _end(end), _block(block){
-						
-					std::cout << "For Statement" << std::endl;
 				}
 				virtual ~ForStatement(){
 					if(_begin)delete _begin;

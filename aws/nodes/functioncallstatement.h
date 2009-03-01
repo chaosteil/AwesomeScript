@@ -20,8 +20,6 @@ namespace AwS{
 			public:
 				FunctionCallStatement(FunctionCall* content)
 					: Statement(), _content(content){
-					
-					std::cout << "FunctionCallStatement" <<  std::endl;
 				}
 				virtual ~FunctionCallStatement(){
 					if(_content)delete _content;

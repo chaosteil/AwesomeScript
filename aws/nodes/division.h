@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				Division(Expression* left, Expression* right)
 					: BinaryExpression(left, right){
-						
-					std::cout << "Division" << std::endl;
 				}
 				virtual ~Division(){}
 

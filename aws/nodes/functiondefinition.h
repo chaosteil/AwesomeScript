@@ -21,8 +21,6 @@ namespace AwS{
 				FunctionDefinition(const std::string& name, std::list<Variable*>* variables,
 					Statement* content)
 					: Statement(), _name(name), _variables(variables), _content(content){
-						
-					std::cout << "Function " << name << std::endl;
 				}
 				virtual ~FunctionDefinition(){
 					if(_variables){

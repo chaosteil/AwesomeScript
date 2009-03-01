@@ -52,11 +52,7 @@ int main(int argc, const char** argv){
 		return 1;
 	}
 
-	// Get starting time for calculation.
-	// We do it this way because the compiler mucks 
-	long start = 0; start = time(NULL);
-	output << "[!] Start: " << start << std::endl;
-
+	// Test output
 	std::ofstream outfile("test.php");
 	outfile << "<?" << std::endl;
 	AwS::Nodes::TranslateSettings settings;
@@ -85,11 +81,6 @@ int main(int argc, const char** argv){
 
 	// close and remove the stream
 	delete parsing;
-
-	// Calculate finishing time
-	long end = time(NULL);
-	output << "[!] End  : " << end << std::endl;
-	output << "[!] Total: " << end-start << std::endl;
 
 	// Done
 	return 0;

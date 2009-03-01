@@ -20,8 +20,6 @@ namespace AwS{
 			public:
 				AdditionEqual(const Variable* var, const Expression* value)
 					: Statement(), _var(var), _value(value){
-					
-					std::cout << "AdditionEqual" << std::endl;
 				}
 				virtual ~AdditionEqual(){
 					if(_var)delete _var;

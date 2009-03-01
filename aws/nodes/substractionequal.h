@@ -20,8 +20,6 @@ namespace AwS{
 			public:
 				SubstractionEqual(const Variable* var, const Expression* value)
 					: Statement(), _var(var), _value(value){
-					
-					std::cout << "SubstractionEqual" << std::endl;
 				}
 				virtual ~SubstractionEqual(){
 					if(_var)delete _var;

@@ -8,7 +8,6 @@
  * Email: Chaosteil@gmail.com
  */
 
-#include <iostream>
 #include <ostream>
 #include "nodeexception.h"
 #include "translatesettings.h"

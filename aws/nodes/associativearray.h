@@ -20,8 +20,6 @@ namespace AwS{
 			public:
 				AssociativeArray(std::list<Assignment*>* content)
 					: Expression(), _content(content){
-
-					std::cout << "Associative Array" << std::endl;
 				}
 				virtual ~AssociativeArray(){
 					if(_content){

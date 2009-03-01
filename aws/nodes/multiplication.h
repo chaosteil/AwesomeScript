@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				Multiplication(Expression* left, Expression* right)
 					: BinaryExpression(left, right){
-						
-					std::cout << "Multiplication" << std::endl;
 				}
 				virtual ~Multiplication(){}
 

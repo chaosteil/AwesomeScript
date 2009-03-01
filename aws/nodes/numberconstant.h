@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				NumberConstant(const float& content)
 					: Expression(), _content(content){
-						
-					std::cout << "Number " << content << std::endl;
 				}
 				virtual ~NumberConstant(){}
 

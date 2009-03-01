@@ -19,8 +19,6 @@ namespace AwS{
 			public:
 				Variable(const std::string& name, std::list<Expression*>* index = NULL)
 					: Expression(), _name(name), _index(index){
-					
-					std::cout << "Variable " << name << std::endl;
 				}
 				virtual ~Variable(){
 					if(_index)delete _index;

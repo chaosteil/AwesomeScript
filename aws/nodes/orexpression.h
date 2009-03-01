@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				OrExpression(Expression* left, Expression* right)
 					: BinaryExpression(left, right){
-					
-					std::cout << "OrExpression" << std::endl;
 				}
 				virtual ~OrExpression(){}
 

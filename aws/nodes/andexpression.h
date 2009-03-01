@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				AndExpression(Expression* left, Expression* right)
 					: BinaryExpression(left, right){
-
-					std::cout << "AndExpression" << std::endl;
 				}
 				virtual ~AndExpression(){}
 

@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				BinaryExpression(Expression* left = NULL, Expression* right = NULL)
 					: Expression(), _left(left), _right(right){
-						
-					std::cout << "Binary Expression" << std::endl;
 				}
 				virtual ~BinaryExpression(){
 					if(_left)delete _left;

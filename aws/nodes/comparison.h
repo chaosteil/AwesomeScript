@@ -25,8 +25,6 @@ namespace AwS{
 				};
 				Comparison(Operator op, Expression* left, Expression* right)
 					: BinaryExpression(left, right), _op(op){
-					
-					std::cout << "Comparison" << std::endl;
 				}
 				virtual ~Comparison(){}
 

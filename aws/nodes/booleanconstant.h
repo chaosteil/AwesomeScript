@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				BooleanConstant(bool content)
 					: Expression(), _content(content){
-					
-					std::cout << "Boolean " << content << std::endl;
 				}
 				virtual ~BooleanConstant(){}
 

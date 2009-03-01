@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				Modulus(Expression* left, Expression* right)
 					: BinaryExpression(left, right){
-					
-					std::cout << "Modulus" << std::endl;
 				}
 				virtual ~Modulus(){}
 

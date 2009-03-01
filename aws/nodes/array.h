@@ -19,8 +19,6 @@ namespace AwS{
 			public:
 				Array(std::list<Expression*>* content)
 					: Expression(), _content(content){
-
-					std::cout << "Array" << std::endl;
 				}
 				virtual ~Array(){
 					if(_content){

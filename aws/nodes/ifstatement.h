@@ -18,8 +18,6 @@ namespace AwS{
 					Statement* trueStatement, Statement* falseStatement)
 					: Statement(), _expression(expression),
 					_trueStatement(trueStatement), _falseStatement(falseStatement){
-					
-					std::cout << "IfStatement" << std::endl;
 				}
 				virtual ~IfStatement(){
 					if(_expression)delete _expression;

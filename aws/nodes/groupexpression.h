@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				GroupExpression(Expression* content)
 					: Expression(), _content(content){
-
-					std::cout << "GroupExpression" << std::endl;
 				}
 				virtual ~GroupExpression(){
 					if(_content)

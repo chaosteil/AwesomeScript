@@ -18,8 +18,6 @@ namespace AwS{
 			public:
 				Block(std::list<Statement*>* content)
 					: Statement(), _content(content){
-
-					std::cout << "Block" << std::endl;
 				}
 				virtual ~Block(){
 					if(_content){

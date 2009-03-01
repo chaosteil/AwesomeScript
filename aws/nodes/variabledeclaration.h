@@ -19,8 +19,6 @@ namespace AwS{
 			public:
 				VariableDeclaration(std::list<Assignment*>* content)
 					: Statement(), _content(content){
-						
-					std::cout << "VariableDeclaration" << std::endl;
 				}
 				virtual ~VariableDeclaration(){
 					if(_content){
