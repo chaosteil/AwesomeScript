@@ -46,9 +46,11 @@ namespace AwS{
 					output << "; ";
 					if(_end)
 						_end->translatePhp(output, settings);
-					output << ")";
+					output << "){" << std::endl;;
 					settings.setIgnoreSemicolon(false);
 					_block->translatePhp(output, settings);
+					output << "}" << std::endl;
+
 				}
 			private:
 				const Statement* _begin;

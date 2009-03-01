@@ -34,7 +34,9 @@ namespace AwS{
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
 					output << "if";
 					_expression->translatePhp(output, settings); // Is definitely a group
+					output << "{" << std::endl;
 					_trueStatement->translatePhp(output, settings);
+					output << "}" << std::endl;
 					if(_falseStatement){
 						output << "else " << std::endl;
 						_falseStatement->translatePhp(output, settings);

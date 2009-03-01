@@ -30,7 +30,9 @@ namespace AwS{
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
 					output << "while";
 					_expression->translatePhp(output, settings); // This is a group statement ()
+					output << "{" << std::endl;
 					_statement->translatePhp(output, settings);
+					output << "}" << std::endl;
 				}
 			private:
 				const Expression* _expression;

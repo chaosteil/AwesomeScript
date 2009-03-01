@@ -17,7 +17,6 @@ function x(f){
 	arr[1]++;
 	echo(d);
 	d = arr[0*2];
-
 	var test = 'mytest';
 	var associated = {'myKey': 2+3, 'another': 'value', a: [5, 4]};
 	

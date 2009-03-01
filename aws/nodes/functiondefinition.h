@@ -45,9 +45,10 @@ namespace AwS{
 						(*i)->translatePhp(output, settings);
 						begin = false;
 					}
-					output << ")" << std::endl;
+					output << "){" << std::endl;
 					
 					_content->translatePhp(output, settings);
+					output << "}" << std::endl << std::endl;
 				}
 			private:
 				const std::string _name;
