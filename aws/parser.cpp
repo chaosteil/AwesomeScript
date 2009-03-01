@@ -428,12 +428,9 @@ Statement* Parser::_parseStatementFunctionCall(const std::string& name){
 Statement* Parser::_parseStatementArray(const std::string& name){
 	if(_reserved.isDeclared(name) == Reference<std::string>::IsDeclared)
 		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
-<<<<<<< HEAD:aws/parser.cpp
 	_variableScope->addDeclaration(name);
-=======
 	
 	std::list<Expression*>* expressions = new std::list<Expression*>();
->>>>>>> phptranslate:aws/parser.cpp
 
 	// We go through all referenced elements.
 	while(42){
@@ -872,15 +869,10 @@ Expression* Parser::_parseExpressionArrayAccess(const std::string& name){
 	if(_reserved.isDeclared(name) == Reference<std::string>::IsDeclared)
 		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
 
-<<<<<<< HEAD:aws/parser.cpp
 	if(_variableScope->addReference(name) != Reference<std::string>::AlreadyDeclared)
 		throw Exception(Exception::ParsingError, "Variable not declared before first use.");
 
-	_readNextToken(); // Skip [
-	_checkUnexpectedEnd();
-=======
 	std::list<Expression*>* expressions = new std::list<Expression*>();
->>>>>>> phptranslate:aws/parser.cpp
 
 	// We go through all referenced elements.
 	while(42){

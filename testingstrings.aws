@@ -24,16 +24,13 @@ function x(f){
 	f = y(1, 2, 3);
 	var arr = [5, [3, 1], {extreme: 'gravity'}, 4];
 	arr[1]++;
-<<<<<<< HEAD:testingstrings.aws
 	echo(a);
 	d = arr[0*2];
 
 	var test = 'return';
-=======
 	echo(c);
 	d = arr[0*2];
 	var test = 'mytest';
->>>>>>> phptranslate:testingstrings.aws
 	var associated = {'myKey': 2+3, 'another': 'value', a: [5, 4]};
 	associated['a'][0][1][2][3][4] = 1;
 	

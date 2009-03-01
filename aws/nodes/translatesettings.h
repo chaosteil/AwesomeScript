@@ -22,7 +22,6 @@ namespace AwS{
 
 				const std::string& getVarPrefix() const{ return _varPrefix; }
 				const std::string& getFunctionPrefix() const{ return _funcPrefix; }
-				}
 
 				void setIgnoreSemicolon(bool ignore){ _ignore = ignore; }
 				bool isIgnoreSemicolon() const{ return _ignore; }
