@@ -32,10 +32,12 @@ namespace AwS{
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
 					output << "{" << std::endl;
+					settings.increaseIndent();
 					for(std::list<Statement*>::iterator i = _content->begin(); i != _content->end(); ++i){
 						if(*i != NULL)
 							(*i)->translatePhp(output, settings);
 					}
+					settings.decreaseIndent();
 					output << "}" << std::endl;
 				}
 			private:

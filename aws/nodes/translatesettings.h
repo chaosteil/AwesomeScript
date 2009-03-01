@@ -8,6 +8,9 @@
  * Email: Chaosteil@gmail.com
  */
 
+#include <ostream>
+#include <sstream>
+
 namespace AwS{
 	namespace Nodes{
 		class TranslateSettings{
@@ -29,7 +32,13 @@ namespace AwS{
 				bool isIgnoreSemicolon() const{ return _ignore; }
 
 				void increaseIndent(){ _indent++; };
-				void decraseIndent(){ _indent--; };
+				void decreaseIndent(){ _indent--; };
+
+				const std::string indent(){
+					std::stringstream indent;
+					for(int i = 0; i < _indent; i++)indent << '\t';
+					return indent.str();
+				}
 
 			private:
 				const std::string _varPrefix, _funcPrefix;
