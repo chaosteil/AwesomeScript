@@ -31,15 +31,6 @@ namespace AwS{
 				void setIgnoreSemicolon(bool ignore){ _ignore = ignore; }
 				bool isIgnoreSemicolon() const{ return _ignore; }
 
-				void increaseIndent(){ _indent++; };
-				void decreaseIndent(){ _indent--; };
-
-				const std::string indent(){
-					std::stringstream indent;
-					for(int i = 0; i < _indent; i++)indent << '\t';
-					return indent.str();
-				}
-
 			private:
 				const std::string _varPrefix, _funcPrefix;
 				bool _ignore;

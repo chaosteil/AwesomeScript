@@ -35,7 +35,7 @@ namespace AwS{
 				const std::list<Assignment*>& getContent() const{ return *_content; }
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
-					output << "{";
+					output << "array(" << std::endl;
 
 					bool begin = true;
 					for(std::list<Assignment*>::iterator i = _content->begin(); i != _content->end(); ++i){
@@ -49,7 +49,7 @@ namespace AwS{
 						begin = false;
 					}
 
-					output << "}";
+					output << ")";
 				}
 			private:
 				std::list<Assignment*>* _content;

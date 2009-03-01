@@ -40,10 +40,10 @@ namespace AwS{
 					output << "for" << "(";
 					if(_begin)
 						_begin->translatePhp(output, settings);
-					output << ";";
+					output << "; ";
 					if(_eval)
 						_eval->translatePhp(output, settings);
-					output << ";";
+					output << "; ";
 					if(_end)
 						_end->translatePhp(output, settings);
 					output << ")";
