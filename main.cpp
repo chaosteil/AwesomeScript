@@ -58,6 +58,7 @@ int main(int argc, const char** argv){
 	output << "[!] Start: " << start << std::endl;
 
 	std::ofstream outfile("test.php");
+	outfile << "<?" << std::endl;
 	AwS::Nodes::TranslateSettings settings;
 
 	try{
@@ -79,6 +80,7 @@ int main(int argc, const char** argv){
 		// Based on exception error code
 		output << "[!] Exception caught: " << e.getMessage() << std::endl;
 	}
+	outfile << std::endl << "?>";
 	outfile.close();
 
 	// close and remove the stream
