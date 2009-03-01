@@ -35,8 +35,10 @@ namespace AwS{
 					output << "if";
 					_expression->translatePhp(output, settings); // Is definitely a group
 					_trueStatement->translatePhp(output, settings);
-					output << "else " << std::endl;
-					_falseStatement->translatePhp(output, settings);
+					if(_falseStatement){
+						output << "else " << std::endl;
+						_falseStatement->translatePhp(output, settings);
+					}
 				}
 			private:
 				const Expression* _expression;
