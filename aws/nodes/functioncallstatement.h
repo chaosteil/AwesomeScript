@@ -30,6 +30,8 @@ namespace AwS{
 				const FunctionCall& getFunctionCall() const{ return *_content; }
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					_content->translatePhp(output, settings);
+					output << ";" << std::endl;
 				}
 			private:
 				const FunctionCall* _content;

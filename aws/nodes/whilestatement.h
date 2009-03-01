@@ -28,6 +28,9 @@ namespace AwS{
 				const Statement* getStatement() const{ return _statement; }
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "while";
+					_expression->translatePhp(output, settings); // Is a group, so () is expected.
+					_statement->translatePhp(output, settings);
 				}
 			private:
 				const Expression* _expression;

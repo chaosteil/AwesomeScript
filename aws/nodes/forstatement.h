@@ -36,6 +36,17 @@ namespace AwS{
 				const Statement* getBlock() const { return _block; }
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "for" << "(";
+					if(_begin)
+						_begin->translatePhp(output, settings);
+					output << ";";
+					if(_eval)
+						_eval->translatePhp(output, settings);
+					output << ";";
+					if(_end)
+						_end->translatePhp(output, settings);
+					output << ")";
+					_block->translatePhp(output, settings);
 				}
 			private:
 				const Statement* _begin;
