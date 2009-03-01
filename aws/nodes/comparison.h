@@ -33,6 +33,24 @@ namespace AwS{
 				Operator getOperator() const{ return _op; }
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					getLeft()->translatePhp(output, settings);
+					switch(_op){
+						Equal:
+							output << " == "; break;
+						NotEqual:
+							output << " != "; break;
+						Less:
+							output << " < "; break;
+						Greater:
+							output << " > "; break;
+						LessEqual:
+							output << " <= "; break;
+						GreaterEqual:
+							output << ">= "; break;
+						default:
+							throw NodeException("Invalid Comparison");
+					}
+					getRight()->translatePhp(output, settings);
 				}
 			private:
 				Operator _op;

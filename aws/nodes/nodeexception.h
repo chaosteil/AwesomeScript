@@ -14,9 +14,10 @@ namespace AwS{
 	class NodeException : public Exception{
 		public:
 			enum NodeError{
-				NoMemory = 0
+				Undefined = 0,
+				NoMemory
 			};
-			NodeException(NodeError error, const std::string& message)
+			NodeException(const std::string& message, NodeError error = Undefined)
 				: Exception(Exception::ConvertError, message), _error(error){
 			}
 
