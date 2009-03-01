@@ -8,27 +8,24 @@
  * Email: Chaosteil@gmail.com
  */
 
-#include "expression.h"
+#include "unaryexpression.h"
 
 namespace AwS{
 	namespace Nodes{
-		class GroupExpression : public Expression{
+		class GroupExpression : public UnaryExpression{
 			public:
 				GroupExpression(Expression* content)
-					: Expression(), _content(content){
+					: UnaryExpression(content){
 				}
 				virtual ~GroupExpression(){
-					if(_content)
-						delete _content;
 				}
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
 					output << "(";
-					_content->translatePhp(output, settings);
+					getValue()->translatePhp(output, settings);
 					output << ")";
 				}
 			private:
-				Expression* _content;
 		};
 	};
 };
