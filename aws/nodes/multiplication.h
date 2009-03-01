@@ -22,6 +22,9 @@ namespace AwS{
 				virtual ~Multiplication(){}
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					getLeft()->translatePhp(output, settings);
+					output << " * ";
+					getRight()->translatePhp(output, settings);
 				}
 		};
 	};
