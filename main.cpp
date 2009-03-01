@@ -7,6 +7,8 @@
 
 #include "aws/aws.h"
 
+#include "aws/nodes/translatesettings.h"
+
 // Implementation
 // * Convert source to tokens via tokenizer (V)
 // * Parse all tokens (V)
@@ -55,14 +57,20 @@ int main(int argc, const char** argv){
 	long start = 0; start = time(NULL);
 	output << "[!] Start: " << start << std::endl;
 
+	std::ofstream outfile("test.php");
+	AwS::Nodes::TranslateSettings settings;
+
 	try{
 		// Parse everything
 		AwS::Parser* parser = new AwS::Parser(*parsing, output);
 		for(;;){
 			AwS::Nodes::Statement* statement = parser->readStatement();
-			if(statement)
+			
+			if(statement){
+				statement->translatePhp(outfile, settings);
+				outfile.flush();
 				delete statement;
-			else
+			}else
 				break;
 		}
 		// TODO build translator
@@ -71,6 +79,7 @@ int main(int argc, const char** argv){
 		// Based on exception error code
 		output << "[!] Exception caught: " << e.getMessage() << std::endl;
 	}
+	outfile.close();
 
 	// close and remove the stream
 	delete parsing;

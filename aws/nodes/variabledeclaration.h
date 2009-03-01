@@ -34,11 +34,25 @@ namespace AwS{
 				const std::list<Assignment*>& getContent() const{ return *_content; }
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					bool ignore = settings.isIgnoreSemicolon();
+					settings.setIgnoreSemicolon(true);
+					bool begin = true;
 					for(std::list<Assignment*>::iterator i = _content->begin(); i != _content->end(); ++i){
-						if(*i)
-							(*i)->translatePhp(output, settings);
+						if(begin == false)
+							output << ", ";
+						if(*i){
+							if((*i)->getValue() == NULL){
+								(*i)->getVariable()->translatePhp(output, settings);
+							}else{
+								(*i)->translatePhp(output, settings);
+							}
+						}
+
+						begin = false;
 					}
-					output << ";" << std::endl;
+					settings.setIgnoreSemicolon(ignore);
+					if(!settings.isIgnoreSemicolon())
+						output << ";" << std::endl;
 				}
 			private:
 				std::list<Assignment*>* _content;

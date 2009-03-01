@@ -43,6 +43,8 @@ namespace AwS{
 							output << ", ";
 
 						(*i)->translatePhp(output, settings);
+
+						begin = false;
 					}
 					output << ")";
 				}

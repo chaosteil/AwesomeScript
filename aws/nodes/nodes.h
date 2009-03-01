@@ -44,6 +44,7 @@
 #include "expression.h"
 #include "unaryexpression.h"
 #include "binaryexpression.h"
+#include "groupexpression.h"
 
 #include "addition.h"
 #include "substraction.h"

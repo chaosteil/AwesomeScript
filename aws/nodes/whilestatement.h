@@ -29,7 +29,7 @@ namespace AwS{
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
 					output << "while";
-					_expression->translatePhp(output, settings); // Is a group, so () is expected.
+					_expression->translatePhp(output, settings); // This is a group statement ()
 					_statement->translatePhp(output, settings);
 				}
 			private:

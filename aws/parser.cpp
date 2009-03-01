@@ -698,7 +698,8 @@ Expression* Parser::_parseExpressionGroup(){
 	Expression* node = _parseExpression();
 	
 	_skipToken(Token::Symbol, ")");
-	return node;
+
+	return new GroupExpression(node);
 }
 
 Expression* Parser::_parseExpressionVariableOrFunctionCall(){

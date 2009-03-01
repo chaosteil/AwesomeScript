@@ -35,7 +35,8 @@ namespace AwS{
 					_var->translatePhp(output, settings);
 					output << " -= ";
 					_value->translatePhp(output, settings);
-					output << ";" << std::endl;
+					if(!settings.isIgnoreSemicolon())
+						output << ";" << std::endl;
 				}
 			private:
 				const Variable* _var;

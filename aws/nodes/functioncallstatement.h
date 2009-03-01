@@ -31,7 +31,8 @@ namespace AwS{
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
 					_content->translatePhp(output, settings);
-					output << ";" << std::endl;
+					if(!settings.isIgnoreSemicolon())
+						output << ";" << std::endl;
 				}
 			private:
 				const FunctionCall* _content;

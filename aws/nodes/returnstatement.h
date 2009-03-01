@@ -29,7 +29,8 @@ namespace AwS{
 					output << "return ";
 					if(_content)
 						_content->translatePhp(output, settings);
-					output << ";" << std::endl;
+					if(!settings.isIgnoreSemicolon())
+						output << ";" << std::endl;
 				}
 			private:
 				const Expression* _content;

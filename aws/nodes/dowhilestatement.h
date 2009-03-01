@@ -31,8 +31,9 @@ namespace AwS{
 					output << "do";
 					_statement->translatePhp(output, settings);
 					output << "while";
-					_statement->translatePhp(output, settings);
-					output << ";" << std::endl;
+					_expression->translatePhp(output, settings);
+					if(!settings.isIgnoreSemicolon())
+						output << ";" << std::endl;
 				}
 			private:
 				const Expression* _expression;

@@ -36,6 +36,7 @@ namespace AwS{
 				const Statement* getBlock() const { return _block; }
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					settings.setIgnoreSemicolon(true);
 					output << "for" << "(";
 					if(_begin)
 						_begin->translatePhp(output, settings);
@@ -46,6 +47,7 @@ namespace AwS{
 					if(_end)
 						_end->translatePhp(output, settings);
 					output << ")";
+					settings.setIgnoreSemicolon(false);
 					_block->translatePhp(output, settings);
 				}
 			private:

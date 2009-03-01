@@ -33,8 +33,10 @@ namespace AwS{
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
 					_var->translatePhp(output, settings);
 					output << " = ";
-					_value->translatePhp(output, settings);
-					output << ";" << std::endl;
+					if(_value)
+						_value->translatePhp(output, settings);
+					if(!settings.isIgnoreSemicolon())
+						output << ";" << std::endl;
 				}
 			private:
 				const Variable* _var;
