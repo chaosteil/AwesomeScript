@@ -35,6 +35,21 @@ namespace AwS{
 				const std::list<Assignment*>& getContent() const{ return *_content; }
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "{";
+
+					bool begin = true;
+					for(std::list<Assignment*>::iterator i = _content->begin(); i != _content->end(); ++i){
+						if(begin == false)
+							output << ", " << std::endl;
+
+						output << "'" << (*i)->getVariable()->getName() << "'";
+						output << ": ";
+						(*i)->getValue()->translatePhp(output, settings);
+
+						begin = false;
+					}
+
+					output << "}";
 				}
 			private:
 				std::list<Assignment*>* _content;
