@@ -20,7 +20,7 @@ namespace AwS{
 				virtual ~ContinueStatement(){}
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
-					output << "continue;";
+					output << "continue;" << std::endl;
 				}
 		};
 	};

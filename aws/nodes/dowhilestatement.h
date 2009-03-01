@@ -26,7 +26,7 @@ namespace AwS{
 				const Statement* getStatement() const{ return _statement; }
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
-					output << "do{";
+					output << "do{" << std::endl;
 					_statement->translatePhp(output, settings);
 					output << "}while";
 					_expression->translatePhp(output, settings);
