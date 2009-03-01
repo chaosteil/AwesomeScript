@@ -26,6 +26,10 @@ namespace AwS{
 				const Expression* getContent() const{ return _content; }
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "return ";
+					if(_content)
+						_content->translatePhp(output, settings);
+					output << ";" << std::endl;
 				}
 			private:
 				const Expression* _content;
