@@ -29,6 +29,9 @@ namespace AwS{
 						delete _content;
 					}
 				}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+				}
 			private:
 				std::list<Statement*>* _content;
 		};

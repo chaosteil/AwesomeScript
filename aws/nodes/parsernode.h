@@ -10,6 +10,8 @@
 
 #include <iostream>
 #include <ostream>
+#include "nodeexception.h"
+#include "translatesettings.h"
 
 namespace AwS{
 	namespace Nodes{
