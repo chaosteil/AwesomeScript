@@ -20,6 +20,9 @@ namespace AwS{
 					std::cout << "Negation" << std::endl;
 				}
 				virtual ~Negation(){}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+				}
 		};
 	};
 };

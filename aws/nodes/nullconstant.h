@@ -20,6 +20,9 @@ namespace AwS{
 					std::cout << "Null" << std::endl;
 				}
 				virtual ~NullConstant(){}
+				
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+				}
 		};
 	};
 };

@@ -34,6 +34,9 @@ namespace AwS{
 				const Expression* getEval() const { return _eval; }
 				const Statement* getEnd() const { return _end; }
 				const Statement* getBlock() const { return _block; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+				}
 			private:
 				const Statement* _begin;
 				const Expression* _eval;

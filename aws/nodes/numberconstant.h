@@ -22,6 +22,9 @@ namespace AwS{
 				virtual ~NumberConstant(){}
 
 				const float& getContent() const{return _content; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+				}
 			private:
 				const float _content;
 		};

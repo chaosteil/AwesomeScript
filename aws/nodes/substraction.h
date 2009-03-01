@@ -21,6 +21,9 @@ namespace AwS{
 					std::cout << "Substraction" << std::endl;
 				}
 				virtual ~Substraction(){}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+				}
 		};
 	};
 };

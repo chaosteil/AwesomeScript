@@ -20,6 +20,9 @@ namespace AwS{
 					std::cout << "Modulus" << std::endl;
 				}
 				virtual ~Modulus(){}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+				}
 		};
 	};
 };

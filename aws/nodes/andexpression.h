@@ -20,6 +20,9 @@ namespace AwS{
 					std::cout << "AndExpression" << std::endl;
 				}
 				virtual ~AndExpression(){}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+				}
 		};
 	};
 };

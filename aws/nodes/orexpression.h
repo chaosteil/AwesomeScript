@@ -20,6 +20,9 @@ namespace AwS{
 					std::cout << "OrExpression" << std::endl;
 				}
 				virtual ~OrExpression(){}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+				}
 		};
 	};
 };

@@ -27,6 +27,9 @@ namespace AwS{
 				
 				const std::string& getName() const{ return _name; }
 				const Expression* getIndex() const{ return _index; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+				}
 			private:
 				const std::string _name;
 				const Expression* _index;

@@ -19,6 +19,9 @@ namespace AwS{
 
 					std::cout << "BreakStatement" << std::endl;
 				}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+				}
 				virtual ~BreakStatement(){}
 		};
 	};

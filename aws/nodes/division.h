@@ -20,6 +20,9 @@ namespace AwS{
 					std::cout << "Division" << std::endl;
 				}
 				virtual ~Division(){}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+				}
 		};
 	};
 };

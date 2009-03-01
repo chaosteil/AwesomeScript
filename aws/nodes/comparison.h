@@ -31,6 +31,9 @@ namespace AwS{
 				virtual ~Comparison(){}
 
 				Operator getOperator() const{ return _op; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+				}
 			private:
 				Operator _op;
 		};

@@ -29,6 +29,9 @@ namespace AwS{
 				
 				const Variable* getVariable() const{ return _var; }
 				const Expression* getValue() const{ return _value; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+				}
 			private:
 				const Variable* _var;
 				const Expression* _value;

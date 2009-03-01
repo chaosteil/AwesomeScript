@@ -20,6 +20,9 @@ namespace AwS{
 					std::cout << "Multiplication" << std::endl;
 				}
 				virtual ~Multiplication(){}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+				}
 		};
 	};
 };
