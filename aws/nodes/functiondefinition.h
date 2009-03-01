@@ -37,6 +37,17 @@ namespace AwS{
 				const Statement* getContent() const{ return _content; }
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "function " << settings.getFunctionPrefix() << _name << "(";
+
+					bool begin = true;
+					for(std::list<Variable*>::iterator i = _variables->begin(); i != _variables->end(); ++i){
+						if(begin == false) output << ", ";
+						(*i)->translatePhp(output, settings);
+						begin = false;
+					}
+					output << ")" << std::endl;
+					
+					_content->translatePhp(output, settings);
 				}
 			private:
 				const std::string _name;

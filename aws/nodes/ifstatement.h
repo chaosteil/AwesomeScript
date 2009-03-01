@@ -32,6 +32,11 @@ namespace AwS{
 				const Statement* getFalse() const{ return _falseStatement; }
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "if";
+					_expression->translatePhp(output, settings); // Is definitely a group
+					_trueStatement->translatePhp(output, settings);
+					output << "else " << std::endl;
+					_falseStatement->translatePhp(output, settings);
 				}
 			private:
 				const Expression* _expression;
