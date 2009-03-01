@@ -41,13 +41,8 @@ namespace AwS{
 								output << ", ";
 							else
 								output << "; ";
-						if(*i){
-							if((*i)->getValue() == NULL){
-								(*i)->getVariable()->translatePhp(output, settings);
-							}else{
-								(*i)->translatePhp(output, settings);
-							}
-						}
+						if(*i)
+							(*i)->translatePhp(output, settings);
 
 						begin = false;
 					}

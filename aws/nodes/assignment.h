@@ -33,6 +33,8 @@ namespace AwS{
 					output << " = ";
 					if(_value)
 						_value->translatePhp(output, settings);
+					else
+						output << "null";
 					if(!settings.isIgnoreSemicolon())
 						output << ";" << std::endl;
 				}
