@@ -1004,17 +1004,15 @@ bool Parser::_FunctionReference::operator==(const _FunctionReference& reference)
 	// We do seperate check for "main" function, as it must have zero parameters in all cases.
 	// This is because main is the entry point for the program, so it must absolutely
 	// conform to the specifications.
-	if(reference.getName() == "main")
+	if(reference.getName() == "main"){
+		// We do not want any reference of main
+		if(reference.getType() == Reference)
+			throw Exception(Exception::ParsingError, "Function Call to main.");
+
 		if(reference.getParams() != 0)
 			return false;
-
-	// We do not want any reference of main
-	if(reference.getName() == "main" || _name == "main"){
-		if(reference.getType() == Reference || _type == Reference){
-			throw Exception(Exception::ParsingError, "Function Call to main.");
-		}
 	}
-
+	
 	// We check all the parameters we need
 	if(reference.getName() == _name){
 		// Since this happens in the isDeclared method, the left one is the declaration, the right

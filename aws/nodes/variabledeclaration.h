@@ -37,7 +37,10 @@ namespace AwS{
 					bool begin = true;
 					for(std::list<Assignment*>::iterator i = _content->begin(); i != _content->end(); ++i){
 						if(begin == false)
-							output << ", ";
+							if(ignore)
+								output << ", ";
+							else
+								output << "; ";
 						if(*i){
 							if((*i)->getValue() == NULL){
 								(*i)->getVariable()->translatePhp(output, settings);
