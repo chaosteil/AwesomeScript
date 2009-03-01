@@ -428,16 +428,27 @@ Statement* Parser::_parseStatementFunctionCall(const std::string& name){
 Statement* Parser::_parseStatementArray(const std::string& name){
 	if(_reserved.isDeclared(name) == Reference<std::string>::IsDeclared)
 		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+<<<<<<< HEAD:aws/parser.cpp
 	_variableScope->addDeclaration(name);
-
-	_readNextToken(); // Skip [
-	_checkUnexpectedEnd();
-
-	Expression* expression = _parseExpression();
+=======
 	
-	_skipToken(Token::Symbol, "]");
+	std::list<Expression*>* expressions = new std::list<Expression*>();
+>>>>>>> phptranslate:aws/parser.cpp
 
-	return _parseStatementOperations(new Variable(name, expression));
+	// We go through all referenced elements.
+	while(42){
+		_readNextToken(); // Skip [
+		_checkUnexpectedEnd();
+
+		expressions->push_back(_parseExpression());
+		
+		_skipToken(Token::Symbol, "]");
+
+		if(!_currentToken->is(Token::Symbol, "["))
+			break;
+	}
+
+	return _parseStatementOperations(new Variable(name, expressions));
 }
 
 Statement* Parser::_parseStatementAssignment(const Variable* variable){
@@ -726,7 +737,8 @@ Expression* Parser::_parseExpressionGroup(){
 	Expression* node = _parseExpression();
 	
 	_skipToken(Token::Symbol, ")");
-	return node;
+
+	return new GroupExpression(node);
 }
 
 Expression* Parser::_parseExpressionVariableOrFunctionCall(){
@@ -860,17 +872,30 @@ Expression* Parser::_parseExpressionArrayAccess(const std::string& name){
 	if(_reserved.isDeclared(name) == Reference<std::string>::IsDeclared)
 		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
 
+<<<<<<< HEAD:aws/parser.cpp
 	if(_variableScope->addReference(name) != Reference<std::string>::AlreadyDeclared)
 		throw Exception(Exception::ParsingError, "Variable not declared before first use.");
 
 	_readNextToken(); // Skip [
 	_checkUnexpectedEnd();
+=======
+	std::list<Expression*>* expressions = new std::list<Expression*>();
+>>>>>>> phptranslate:aws/parser.cpp
 
-	Expression* expression = _parseExpression();
-	
-	_skipToken(Token::Symbol, "]");
+	// We go through all referenced elements.
+	while(42){
+		_readNextToken(); // Skip [
+		_checkUnexpectedEnd();
 
-	return new Variable(name, expression);
+		expressions->push_back(_parseExpression());
+		
+		_skipToken(Token::Symbol, "]");
+
+		if(!_currentToken->is(Token::Symbol, "["))
+			break;
+	}
+
+	return new Variable(name, expressions);
 }
 
 FunctionCall* Parser::_parseFunctionCall(const std::string& name){

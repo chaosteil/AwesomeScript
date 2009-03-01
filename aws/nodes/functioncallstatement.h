@@ -20,14 +20,18 @@ namespace AwS{
 			public:
 				FunctionCallStatement(FunctionCall* content)
 					: Statement(), _content(content){
-					
-					std::cout << "FunctionCallStatement" <<  std::endl;
 				}
 				virtual ~FunctionCallStatement(){
 					if(_content)delete _content;
 				}
 
 				const FunctionCall& getFunctionCall() const{ return *_content; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					_content->translatePhp(output, settings);
+					if(!settings.isIgnoreSemicolon())
+						output << ";" << std::endl;
+				}
 			private:
 				const FunctionCall* _content;
 		};

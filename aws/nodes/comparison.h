@@ -25,12 +25,31 @@ namespace AwS{
 				};
 				Comparison(Operator op, Expression* left, Expression* right)
 					: BinaryExpression(left, right), _op(op){
-					
-					std::cout << "Comparison" << std::endl;
 				}
 				virtual ~Comparison(){}
 
 				Operator getOperator() const{ return _op; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					getLeft()->translatePhp(output, settings);
+					
+					if(_op == Equal)
+						output << " == ";
+					else if(_op == NotEqual)
+						output << " != ";
+					else if(_op == Less)
+						output << " < ";
+					else if(_op == Greater)
+						output << " > ";
+					else if(_op == LessEqual)
+						output << " <= ";
+					else if(_op == GreaterEqual)
+						output << " >= ";
+					else
+						throw NodeException("Invalid Comparison");
+
+					getRight()->translatePhp(output, settings);
+				}
 			private:
 				Operator _op;
 		};

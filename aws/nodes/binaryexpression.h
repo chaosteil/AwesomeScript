@@ -16,14 +16,12 @@ namespace AwS{
 			public:
 				BinaryExpression(Expression* left = NULL, Expression* right = NULL)
 					: Expression(), _left(left), _right(right){
-						
-					std::cout << "Binary Expression" << std::endl;
 				}
 				virtual ~BinaryExpression(){
 					if(_left)delete _left;
 					if(_right)delete _right;
 				}
-				
+
 				const Expression* getLeft() const{ return _left; }
 				const Expression* getRight() const{ return _right; }
 			private:

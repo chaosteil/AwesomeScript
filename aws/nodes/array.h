@@ -19,8 +19,6 @@ namespace AwS{
 			public:
 				Array(std::list<Expression*>* content)
 					: Expression(), _content(content){
-
-					std::cout << "Array" << std::endl;
 				}
 				virtual ~Array(){
 					if(_content){
@@ -32,6 +30,22 @@ namespace AwS{
 				}
 
 				const std::list<Expression*>& getContent() const{ return *_content; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "array" << "(";
+
+					bool begin = true;
+					for(std::list<Expression*>::iterator i = _content->begin(); i != _content->end(); ++i){
+						if(begin == false)
+							output << ", ";
+
+						(*i)->translatePhp(output, settings);
+						
+						begin = false;
+					}
+
+					output << ")";
+				}
 			private:
 				std::list<Expression*>* _content;
 		};

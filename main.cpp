@@ -7,6 +7,8 @@
 
 #include "aws/aws.h"
 
+#include "aws/nodes/translatesettings.h"
+
 // Implementation
 // * Convert source to tokens via tokenizer (V)
 // * Parse all tokens (V)
@@ -50,19 +52,22 @@ int main(int argc, const char** argv){
 		return 1;
 	}
 
-	// Get starting time for calculation.
-	// We do it this way because the compiler mucks 
-	long start = 0; start = time(NULL);
-	output << "[!] Start: " << start << std::endl;
+	// Test output
+	std::ofstream outfile("test.php");
+	outfile << "<?" << std::endl;
+	AwS::Nodes::TranslateSettings settings;
 
 	try{
 		// Parse everything
 		AwS::Parser* parser = new AwS::Parser(*parsing, output);
 		for(;;){
 			AwS::Nodes::Statement* statement = parser->readStatement();
-			if(statement)
+			
+			if(statement){
+				statement->translatePhp(outfile, settings);
+				outfile.flush();
 				delete statement;
-			else
+			}else
 				break;
 		}
 		// TODO build translator
@@ -71,14 +76,11 @@ int main(int argc, const char** argv){
 		// Based on exception error code
 		output << "[!] Exception caught: " << e.getMessage() << std::endl;
 	}
+	outfile << std::endl << "?>";
+	outfile.close();
 
 	// close and remove the stream
 	delete parsing;
-
-	// Calculate finishing time
-	long end = time(NULL);
-	output << "[!] End  : " << end << std::endl;
-	output << "[!] Total: " << end-start << std::endl;
 
 	// Done
 	return 0;

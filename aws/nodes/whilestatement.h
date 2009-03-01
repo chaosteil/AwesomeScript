@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				WhileStatement(Expression* expression, Statement* statement)
 					: Statement(), _expression(expression), _statement(statement){
-					
-					std::cout << "WhileStatement" << std::endl;
 				}
 				virtual ~WhileStatement(){
 					if(_expression)delete _expression;
@@ -26,6 +24,14 @@ namespace AwS{
 
 				const Expression* getExpression() const{ return _expression; }
 				const Statement* getStatement() const{ return _statement; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "while";
+					_expression->translatePhp(output, settings); // This is a group statement ()
+					output << "{" << std::endl;
+					_statement->translatePhp(output, settings);
+					output << "}" << std::endl;
+				}
 			private:
 				const Expression* _expression;
 				const Statement* _statement;

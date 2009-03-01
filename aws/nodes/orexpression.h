@@ -16,10 +16,14 @@ namespace AwS{
 			public:
 				OrExpression(Expression* left, Expression* right)
 					: BinaryExpression(left, right){
-					
-					std::cout << "OrExpression" << std::endl;
 				}
 				virtual ~OrExpression(){}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					getLeft()->translatePhp(output, settings);
+					output << " || ";
+					getRight()->translatePhp(output, settings);
+				}
 		};
 	};
 };

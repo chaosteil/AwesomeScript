@@ -20,8 +20,6 @@ namespace AwS{
 			public:
 				AssociativeArray(std::list<Assignment*>* content)
 					: Expression(), _content(content){
-
-					std::cout << "Associative Array" << std::endl;
 				}
 				virtual ~AssociativeArray(){
 					if(_content){
@@ -33,6 +31,24 @@ namespace AwS{
 				}
 
 				const std::list<Assignment*>& getContent() const{ return *_content; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "array(" << std::endl;
+
+					bool begin = true;
+					for(std::list<Assignment*>::iterator i = _content->begin(); i != _content->end(); ++i){
+						if(begin == false)
+							output << ", " << std::endl;
+
+						output << "'" << (*i)->getVariable()->getName() << "'";
+						output << " => ";
+						(*i)->getValue()->translatePhp(output, settings);
+
+						begin = false;
+					}
+
+					output << ")";
+				}
 			private:
 				std::list<Assignment*>* _content;
 		};

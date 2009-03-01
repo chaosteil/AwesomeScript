@@ -19,14 +19,19 @@ namespace AwS{
 			public:
 				Increase(const Variable* var)
 					: Statement(), _var(var){
-						
-					std::cout << "Increase" << std::endl;
 				}
 				virtual ~Increase(){
 					if(_var)delete _var;
 				}
 				
 				const Variable* getVariable() const{ return _var; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					_var->translatePhp(output, settings);
+					output << "++";
+					if(!settings.isIgnoreSemicolon())
+						output << ";" << std::endl;
+				}
 			private:
 				const Variable* _var;
 		};

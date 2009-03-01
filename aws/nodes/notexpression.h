@@ -16,10 +16,13 @@ namespace AwS{
 			public:
 				NotExpression(Expression* value)
 					: UnaryExpression(value){
-						
-					std::cout << "NotExpression" << std::endl;
 				}
 				virtual ~NotExpression(){}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "!";
+					getValue()->translatePhp(output, settings);
+				}
 		};
 	};
 };

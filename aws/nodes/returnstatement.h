@@ -16,14 +16,20 @@ namespace AwS{
 			public:
 				ReturnStatement(const Expression* content)
 					: Statement(), _content(content){
-						
-					std::cout << "ReturnStatement" << std::endl;
 				}
 				virtual ~ReturnStatement(){
 					if(_content)delete _content;
 				}
 
 				const Expression* getContent() const{ return _content; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "return ";
+					if(_content)
+						_content->translatePhp(output, settings);
+					if(!settings.isIgnoreSemicolon())
+						output << ";" << std::endl;
+				}
 			private:
 				const Expression* _content;
 		};

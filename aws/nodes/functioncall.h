@@ -19,8 +19,6 @@ namespace AwS{
 			public:
 				FunctionCall(const std::string& name, std::list<Expression*>* content)
 					: Expression(), _name(name), _content(content){
-						
-					std::cout << "FunctionCall " << name <<  std::endl;
 				}
 				virtual ~FunctionCall(){
 					if(_content){
@@ -33,6 +31,21 @@ namespace AwS{
 
 				const std::string& getName() const{ return _name; }
 				const std::list<Expression*>& getContent() const{ return *_content; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << settings.getFunctionPrefix() << _name << "(";
+
+					bool begin = true;
+					for(std::list<Expression*>::iterator i = _content->begin(); i != _content->end(); ++i){
+						if(begin == false)
+							output << ", ";
+
+						(*i)->translatePhp(output, settings);
+
+						begin = false;
+					}
+					output << ")";
+				}
 			private:
 				const std::string _name;
 				std::list<Expression*>* _content;

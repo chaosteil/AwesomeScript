@@ -32,7 +32,7 @@ namespace AwS{
 			 * \param type The type of the Exception, also marks the error code to be passed.
 			 * \param message The human readable error message, should provide additional information about the specific error.
 			 */
-			Exception(ExceptionType type, std::string message);
+			Exception(ExceptionType type, const std::string& message);
 			//! Destructor.
 			~Exception();
 			//! The human readable message of this Exception.

@@ -17,7 +17,7 @@ using namespace AwS;
  * P U B L I C   M E T H O D S
  * ============================================================================*/
 
-Exception::Exception(ExceptionType type, std::string message)
+Exception::Exception(ExceptionType type, const std::string& message)
 	: _type(type), _message(message)
 {
 }

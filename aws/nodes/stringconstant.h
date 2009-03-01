@@ -18,12 +18,14 @@ namespace AwS{
 			public:
 				StringConstant(const std::string& content)
 					: Expression(), _content(content){
-						
-					std::cout << "String " << _content << std::endl;
 				}
 				virtual ~StringConstant(){}
 
 				const std::string& getContent() const{return _content; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "'" << _content << "'";
+				}
 			private:
 				const std::string _content;
 		};

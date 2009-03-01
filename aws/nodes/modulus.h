@@ -16,10 +16,14 @@ namespace AwS{
 			public:
 				Modulus(Expression* left, Expression* right)
 					: BinaryExpression(left, right){
-					
-					std::cout << "Modulus" << std::endl;
 				}
 				virtual ~Modulus(){}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					getLeft()->translatePhp(output, settings);
+					output << " % ";
+					getRight()->translatePhp(output, settings);
+				}
 		};
 	};
 };

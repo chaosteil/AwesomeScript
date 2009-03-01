@@ -16,10 +16,14 @@ namespace AwS{
 			public:
 				AndExpression(Expression* left, Expression* right)
 					: BinaryExpression(left, right){
-
-					std::cout << "AndExpression" << std::endl;
 				}
 				virtual ~AndExpression(){}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					getLeft()->translatePhp(output, settings);
+					output << " && ";
+					getRight()->translatePhp(output, settings);
+				}
 		};
 	};
 };

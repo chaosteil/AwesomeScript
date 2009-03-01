@@ -18,8 +18,6 @@ namespace AwS{
 			public:
 				Block(std::list<Statement*>* content)
 					: Statement(), _content(content){
-
-					std::cout << "Block" << std::endl;
 				}
 				virtual ~Block(){
 					if(_content){
@@ -28,6 +26,15 @@ namespace AwS{
 						}
 						delete _content;
 					}
+				}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					// output << "{" << std::endl;
+					for(std::list<Statement*>::iterator i = _content->begin(); i != _content->end(); ++i){
+						if(*i != NULL)
+							(*i)->translatePhp(output, settings);
+					}
+					// output << "}" << std::endl;
 				}
 			private:
 				std::list<Statement*>* _content;

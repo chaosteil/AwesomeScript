@@ -16,12 +16,18 @@ namespace AwS{
 			public:
 				BooleanConstant(bool content)
 					: Expression(), _content(content){
-					
-					std::cout << "Boolean " << content << std::endl;
 				}
 				virtual ~BooleanConstant(){}
 
 				bool getContent() const{return _content; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					if(_content == true){
+						output << "true";
+					}else{
+						output << "false";
+					}
+				}
 			private:
 				const bool _content;
 		};

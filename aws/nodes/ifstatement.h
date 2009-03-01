@@ -18,8 +18,6 @@ namespace AwS{
 					Statement* trueStatement, Statement* falseStatement)
 					: Statement(), _expression(expression),
 					_trueStatement(trueStatement), _falseStatement(falseStatement){
-					
-					std::cout << "IfStatement" << std::endl;
 				}
 				virtual ~IfStatement(){
 					if(_expression)delete _expression;
@@ -30,6 +28,18 @@ namespace AwS{
 				const Expression* getExpression() const{ return _expression; }
 				const Statement* getTrue() const{ return _trueStatement; }
 				const Statement* getFalse() const{ return _falseStatement; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "if";
+					_expression->translatePhp(output, settings); // Is definitely a group
+					output << "{" << std::endl;
+					_trueStatement->translatePhp(output, settings);
+					output << "}" << std::endl;
+					if(_falseStatement){
+						output << "else " << std::endl;
+						_falseStatement->translatePhp(output, settings);
+					}
+				}
 			private:
 				const Expression* _expression;
 				const Statement* _trueStatement;

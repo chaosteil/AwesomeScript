@@ -16,10 +16,12 @@ namespace AwS{
 			public:
 				ContinueStatement()
 					: Statement(){
-						
-					std::cout << "ContinueStatement" << std::endl;
 				}
 				virtual ~ContinueStatement(){}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "continue;";
+				}
 		};
 	};
 };

@@ -20,8 +20,6 @@ namespace AwS{
 				ForStatement(const Statement* begin, const Expression* eval,
 					const Statement* end, const Statement* block)
 					: Statement(), _begin(begin), _eval(eval), _end(end), _block(block){
-						
-					std::cout << "For Statement" << std::endl;
 				}
 				virtual ~ForStatement(){
 					if(_begin)delete _begin;
@@ -34,6 +32,24 @@ namespace AwS{
 				const Expression* getEval() const { return _eval; }
 				const Statement* getEnd() const { return _end; }
 				const Statement* getBlock() const { return _block; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					settings.setIgnoreSemicolon(true);
+					output << "for" << "(";
+					if(_begin)
+						_begin->translatePhp(output, settings);
+					output << "; ";
+					if(_eval)
+						_eval->translatePhp(output, settings);
+					output << "; ";
+					if(_end)
+						_end->translatePhp(output, settings);
+					output << "){" << std::endl;;
+					settings.setIgnoreSemicolon(false);
+					_block->translatePhp(output, settings);
+					output << "}" << std::endl;
+
+				}
 			private:
 				const Statement* _begin;
 				const Expression* _eval;

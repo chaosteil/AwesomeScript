@@ -8,7 +8,9 @@
  * Email: Chaosteil@gmail.com
  */
 
-#include <iostream>
+#include <ostream>
+#include "nodeexception.h"
+#include "translatesettings.h"
 
 namespace AwS{
 	namespace Nodes{
@@ -16,6 +18,8 @@ namespace AwS{
 			public:
 				ParserNode(){}
 				virtual ~ParserNode(){}
+
+				virtual void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException) = 0;
 		};
 	};
 };

@@ -16,12 +16,14 @@ namespace AwS{
 			public:
 				NumberConstant(const float& content)
 					: Expression(), _content(content){
-						
-					std::cout << "Number " << content << std::endl;
 				}
 				virtual ~NumberConstant(){}
 
 				const float& getContent() const{return _content; }
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << _content;
+				}
 			private:
 				const float _content;
 		};

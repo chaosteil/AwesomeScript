@@ -17,10 +17,14 @@ namespace AwS{
 			public:
 				Substraction(Expression* left, Expression* right)
 					: BinaryExpression(left, right){
-						
-					std::cout << "Substraction" << std::endl;
 				}
 				virtual ~Substraction(){}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					getLeft()->translatePhp(output, settings);
+					output << " - ";
+					getRight()->translatePhp(output, settings);
+				}
 		};
 	};
 };

@@ -16,10 +16,13 @@ namespace AwS{
 			public:
 				BreakStatement()
 					: Statement(){
-
-					std::cout << "BreakStatement" << std::endl;
 				}
+
 				virtual ~BreakStatement(){}
+
+				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
+					output << "break;";
+				}
 		};
 	};
 };

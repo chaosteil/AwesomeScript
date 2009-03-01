@@ -16,8 +16,6 @@ namespace AwS{
 			public:
 				UnaryExpression(Expression* value)
 					: Expression(), _value(value){
-						
-					std::cout << "Unary Expression" << std::endl;
 				}
 				virtual ~UnaryExpression(){
 					if(_value)delete _value;
