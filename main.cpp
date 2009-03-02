@@ -1,3 +1,14 @@
+/*
+ * main.cpp
+ * AwesomeScript Translator
+ * Author: Dominykas Djacenka
+ * Email: Chaosteil@gmail.com
+ */
+
+/* ==============================================================================
+ * I N C L U D E S
+ * ============================================================================*/
+
 #include <ostream>
 #include <istream>
 #include <fstream>
@@ -6,13 +17,11 @@
 #include <time.h>
 
 #include "aws/aws.h"
-
 #include "aws/nodes/translatesettings.h"
 
-// Implementation
-// * Convert source to tokens via tokenizer (V)
-// * Parse all tokens (V)
-// * Return valid php code
+/* ==============================================================================
+ * F U N C T I O N S
+ * ============================================================================*/
 
 void help(int argc, const char** argv){
 	std::cout << "AwsesomeScript translator" << std::endl;
@@ -22,6 +31,9 @@ void help(int argc, const char** argv){
 	std::cout << "       " << argv[0] << " filename" << std::endl;
 }
 
+/* ==============================================================================
+ * M A I N
+ * ============================================================================*/
 int main(int argc, const char** argv){
 	// Get stream to output
 	// Can be file, or currently std output

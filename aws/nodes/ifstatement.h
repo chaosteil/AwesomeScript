@@ -34,10 +34,12 @@ namespace AwS{
 					_expression->translatePhp(output, settings); // Is definitely a group
 					output << "{" << std::endl;
 					_trueStatement->translatePhp(output, settings);
-					output << "}" << std::endl;
+					output << "}";
 					if(_falseStatement){
 						output << "else " << std::endl;
 						_falseStatement->translatePhp(output, settings);
+					}else{
+						output << std::endl;
 					}
 				}
 			private:
