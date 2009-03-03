@@ -50,13 +50,22 @@ int main(int argc, const char** argv){
 	if(argc == 3 && ((strncmp(argv[1], "-i", 2) == 0) || (strncmp(argv[1], "--input", 8) == 0))){
 		// Get everything from the arguments
 		parsing = new std::stringstream(argv[2]);
+		if(!parsing){
+			std::cerr << "Memory Error" << std::endl;
+			return 3;
+		}
 	}else if(argc == 2){
 		// Get from the file
 		parsing = new std::ifstream(argv[1]);
+		if(!parsing){
+			std::cerr << "Memory Error" << std::endl;
+			return 3;
+		}
+
 		if(!static_cast<std::ifstream*>(parsing)->is_open() ||
 			static_cast<std::ifstream*>(parsing)->fail()){
 
-			std::cout << "File \"" << argv[1] << "\" does not exist or could not be read." << std::endl;
+			std::cerr << "File \"" << argv[1] << "\" does not exist or could not be read." << std::endl;
 			return 2; 
 		}
 	}else{
@@ -72,6 +81,10 @@ int main(int argc, const char** argv){
 	try{
 		// Parse everything
 		AwS::Parser* parser = new AwS::Parser(*parsing, output);
+		if(!parser){
+			std::cerr << "Memory Error" << std::endl;
+			return 3;
+		}
 		for(;;){
 			AwS::Nodes::Statement* statement = parser->readStatement();
 			

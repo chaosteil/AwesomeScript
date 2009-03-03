@@ -32,6 +32,8 @@ Parser::Parser(std::istream& input, std::ostream& output)
 
 	// Start tokenizer and read first token
 	_tokenizer = new Tokenizer(_input);
+	if(!_tokenizer)
+		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing");
 	_readNextToken();
 
 	// Default state, should finish with only default state in stack
@@ -126,6 +128,8 @@ Statement* Parser::_parseStatementBlock(){
 	_readNextToken(); // Skip {
 	
 	std::list<Statement*>* statements = new std::list<Statement*>();
+	if(!statements)
+		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
 	
 	while(!_isFinished() && !_currentToken->is(Token::Symbol, "}")){
 		statements->push_back(readStatement());
@@ -153,6 +157,9 @@ Statement* Parser::_parseStatementFunction(){
 	_checkUnexpectedEnd();
 	
 	std::list<Variable*>* variables = new std::list<Variable*>();
+	if(!variables)
+		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+
 	if(_variableScope == NULL)
 		_variableScope = new Reference<std::string>();
 
@@ -305,6 +312,8 @@ Statement* Parser::_parseStatementVar(){
 	_checkUnexpectedEnd();
 
 	std::list<Assignment*>* variables = new std::list<Assignment*>();
+	if(!variables)
+		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
 
 	while(!_isFinished()){
 		if(_currentToken->getType() != Token::Word)
@@ -431,6 +440,8 @@ Statement* Parser::_parseStatementArray(const std::string& name){
 	_variableScope->addDeclaration(name);
 	
 	std::list<Expression*>* expressions = new std::list<Expression*>();
+	if(!expressions)
+		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
 
 	// We go through all referenced elements.
 	while(42){
@@ -612,6 +623,8 @@ Expression* Parser::_parseExpressionAnd(){
 	while(!_isFinished() && _currentToken->is(Token::Symbol, "&&")){
 		_readNextToken(); // Skip "&&"
 		node = new AndExpression(node, _parseExpressionOr());
+		if(!node)
+			throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
 	}
 
 	return node;
@@ -623,6 +636,8 @@ Expression* Parser::_parseExpressionOr(){
 	while(!_isFinished() && _currentToken->is(Token::Symbol, "||")){
 		_readNextToken(); // Skip "||"
 		node = new OrExpression(node, _parseExpressionComparison());
+		if(!node)
+			throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
 	}
 
 	return node;
@@ -661,9 +676,13 @@ Expression* Parser::_parseExpressionAddition(){
 		if(_currentToken->is(Token::Symbol, "+")){
 			_readNextToken();
 			node = new Addition(node, _parseExpressionMultiplication());
+			if(!node)
+				throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
 		}else if(_currentToken->is(Token::Symbol, "-")){
 			_readNextToken();
 			node = new Substraction(node, _parseExpressionMultiplication());
+			if(!node)
+				throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
 		}else
 			break;
 	}
@@ -678,12 +697,18 @@ Expression* Parser::_parseExpressionMultiplication(){
 		if(_currentToken->is(Token::Symbol, "*")){
 			_readNextToken();
 			node = new Multiplication(node, _parseExpressionUnary());
+			if(!node)
+				throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
 		}else if(_currentToken->is(Token::Symbol, "/")){
 			_readNextToken();
 			node = new Division(node, _parseExpressionUnary());
+			if(!node)
+				throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
 		}else if(_currentToken->is(Token::Symbol, "%")){
 			_readNextToken();
 			node = new Modulus(node, _parseExpressionUnary());
+			if(!node)
+				throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
 		}else
 			break;
 	}
@@ -795,6 +820,8 @@ Expression* Parser::_parseExpressionArray(){
 	_checkUnexpectedEnd();
 
 	std::list<Expression*>* arguments = new std::list<Expression*>();
+	if(!arguments)
+		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
 	if(!_currentToken->is(Token::Symbol, "]")){
 		arguments->push_back(_parseExpression());
 		_checkUnexpectedEnd();
@@ -825,6 +852,8 @@ Expression* Parser::_parseExpressionAssociativeArray(){
 	_checkUnexpectedEnd();
 
 	std::list<Assignment*>* values = new std::list<Assignment*>();
+	if(!values)
+		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
 	if(!_currentToken->is(Token::Symbol, "}")){
 		values->push_back(_parseExpressionAssociativeArrayPair());
 		_checkUnexpectedEnd();
@@ -852,6 +881,8 @@ Nodes::Assignment* Parser::_parseExpressionAssociativeArrayPair(){
 		throw Exception(Exception::ParsingError, "Using reserved word as key");
 
 	Variable* var = new Variable(_currentToken->getValue());
+	if(!var)
+		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
 
 	_readNextToken();
 	_checkUnexpectedEnd();
@@ -873,6 +904,8 @@ Expression* Parser::_parseExpressionArrayAccess(const std::string& name){
 		throw Exception(Exception::ParsingError, "Variable not declared before first use.");
 
 	std::list<Expression*>* expressions = new std::list<Expression*>();
+	if(!expressions)
+		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
 
 	// We go through all referenced elements.
 	while(42){
@@ -898,6 +931,8 @@ FunctionCall* Parser::_parseFunctionCall(const std::string& name){
 	_checkUnexpectedEnd();
 
 	std::list<Expression*>* arguments = new std::list<Expression*>();
+	if(!arguments)
+		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
 	if(!_currentToken->is(Token::Symbol, ")")){
 		arguments->push_back(_parseExpression());
 
