@@ -45,7 +45,7 @@ Parser::~Parser() throw(Exception){
 		delete _tokenizer; _tokenizer = NULL;
 	
 	// We didn't left our state yet
-	if((_states.top() != Default))// TODO || !_functions.isClean())
+	if((_states.top() != Default))
 		throw Exception(Exception::SyntaxError, "Code is incomplete");
 	
 	const std::list<_FunctionReference>* functions = _functions.getReferences();
@@ -340,7 +340,7 @@ Statement* Parser::_parseStatementVar(){
 		if(assignment)
 			variables->push_back(assignment);
 		else
-			variables->push_back(new Assignment(new Variable(name), NULL));
+			variables->push_back(new Assignment(new Variable(name), NULL, Assignment::Normal));
 
 		_checkUnexpectedEnd();
 
@@ -477,7 +477,7 @@ Statement* Parser::_parseStatementAssignment(const Variable* variable){
 		_skipToken(Token::Symbol, ";");
 	}
 
-	return new Assignment(variable, expression);
+	return new Assignment(variable, expression, Assignment::Normal);
 }
 
 Statement* Parser::_parseStatementAdditionEqual(const Variable* variable){
@@ -491,7 +491,7 @@ Statement* Parser::_parseStatementAdditionEqual(const Variable* variable){
 		_skipToken(Token::Symbol, ";");
 	}
 
-	return new AdditionEqual(variable, expression);
+	return new Assignment(variable, expression, Assignment::Addition);
 }
 
 Statement* Parser::_parseStatementSubstractionEqual(const Variable* variable){
@@ -505,7 +505,7 @@ Statement* Parser::_parseStatementSubstractionEqual(const Variable* variable){
 		_skipToken(Token::Symbol, ";");
 	}
 
-	return new SubstractionEqual(variable, expression);
+	return new Assignment(variable, expression, Assignment::Substraction);
 }
 
 Statement* Parser::_parseStatementMultiplicationEqual(const Variable* variable){
@@ -519,7 +519,7 @@ Statement* Parser::_parseStatementMultiplicationEqual(const Variable* variable){
 		_skipToken(Token::Symbol, ";");
 	}
 
-	return new MultiplicationEqual(variable, expression);
+	return new Assignment(variable, expression, Assignment::Multiplication);
 }
 
 Statement* Parser::_parseStatementDivisionEqual(const Variable* variable){
@@ -533,7 +533,7 @@ Statement* Parser::_parseStatementDivisionEqual(const Variable* variable){
 		_skipToken(Token::Symbol, ";");
 	}
 
-	return new DivisionEqual(variable, expression);
+	return new Assignment(variable, expression, Assignment::Division);
 }
 
 Statement* Parser::_parseStatementModulusEqual(const Variable* variable){
@@ -547,7 +547,7 @@ Statement* Parser::_parseStatementModulusEqual(const Variable* variable){
 		_skipToken(Token::Symbol, ";");
 	}
 
-	return new ModulusEqual(variable, expression);
+	return new Assignment(variable, expression, Assignment::Modulus);
 }
 
 Statement* Parser::_parseStatementIncrease(const Variable* variable){

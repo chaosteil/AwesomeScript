@@ -17,8 +17,17 @@ namespace AwS{
 	namespace Nodes{
 		class Assignment : public Statement{
 			public:
-				Assignment(const Variable* var, const Expression* value)
-					: Statement(), _var(var), _value(value){
+				enum Type{
+					Normal = 0, // =
+					Addition, // +=
+					Substraction, // -=
+					Multiplication, // *=
+					Division, // /=
+					Modulus // %=
+				};
+
+				Assignment(const Variable* var, const Expression* value, Type type)
+					: Statement(), _var(var), _value(value), _type(type){
 				}
 				virtual ~Assignment(){
 					if(_var)delete _var;
@@ -30,7 +39,21 @@ namespace AwS{
 
 				void translatePhp(std::ostream& output, TranslateSettings& settings) const throw(NodeException){
 					_var->translatePhp(output, settings);
-					output << " = ";
+					if(_type == Normal){
+						output << " = ";
+					}else if(_type == Addition){
+						output << " += ";
+					}else if(_type == Substraction){
+						output << " -= ";
+					}else if(_type == Multiplication){
+						output << " *= ";
+					}else if(_type == Division){
+						output << " /= ";
+					}else if(_type == Modulus){
+						output << " %= ";
+					}else
+						throw NodeException("Memory corruption.");
+
 					if(_value)
 						_value->translatePhp(output, settings);
 					else
@@ -41,6 +64,7 @@ namespace AwS{
 			private:
 				const Variable* _var;
 				const Expression* _value;
+				const Type _type;
 		};
 	};
 };

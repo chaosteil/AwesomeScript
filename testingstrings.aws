@@ -23,7 +23,7 @@ function x(f){
 	y(c, 3);
 	f = y(1, 2, 3);
 	var arr = [5, [3, 1], {extreme: 'gravity'}, 4];
-	arr[1]++;
+	arr[0] *= 3;
 	echo(a);
 	d = arr[0*2];
 

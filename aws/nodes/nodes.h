@@ -27,18 +27,13 @@
 
 #include "variable.h"
 #include "variabledeclaration.h"
-#include "assignment.h"
 #include "booleanconstant.h"
 #include "numberconstant.h"
 #include "nullconstant.h"
 #include "stringconstant.h"
 #include "increase.h"
 #include "decrease.h"
-#include "additionequal.h"
-#include "substractionequal.h"
-#include "multiplicationequal.h"
-#include "divisionequal.h"
-#include "modulusequal.h"
+#include "assignment.h"
 
 // Expressions
 #include "expression.h"
