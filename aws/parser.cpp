@@ -1005,6 +1005,7 @@ void Parser::_prepareReserved(){
 	_reserved.addDeclaration("while");
 	_reserved.addDeclaration("do");
 	_reserved.addDeclaration("for");
+	_reserved.addDeclaration("foreach");
 
 	_reserved.addDeclaration("return");
 	_reserved.addDeclaration("continue");
