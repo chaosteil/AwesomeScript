@@ -90,6 +90,11 @@ namespace AwS{
 			std::stringstream _tokenValueBuffer;
 			CommentState _commentState;
 
+			enum _Error{
+				Unknown = 0,
+				EndOfSource,
+				InvalidCharacter
+			};
 	};
 };
 
