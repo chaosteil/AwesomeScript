@@ -1070,6 +1070,7 @@ void Parser::_prepareReserved(){
 	_reserved.addDeclaration("do");
 	_reserved.addDeclaration("for");
 	_reserved.addDeclaration("foreach");
+	_reserved.addDeclaration("new");
 
 	_reserved.addDeclaration("return");
 	_reserved.addDeclaration("continue");
@@ -1078,6 +1079,64 @@ void Parser::_prepareReserved(){
 	_reserved.addDeclaration("true");
 	_reserved.addDeclaration("false");
 	_reserved.addDeclaration("null");
+
+	// PHP KEYWORDS!
+	_reserved.addDeclaration("abstract");
+	_reserved.addDeclaration("and");
+	_reserved.addDeclaration("array");
+	_reserved.addDeclaration("as");
+	_reserved.addDeclaration("case");
+	_reserved.addDeclaration("catch");
+	_reserved.addDeclaration("cfunction");
+	_reserved.addDeclaration("class");
+	_reserved.addDeclaration("clone");
+	_reserved.addDeclaration("const");
+	_reserved.addDeclaration("declare");
+	_reserved.addDeclaration("default");
+	_reserved.addDeclaration("elseif");
+	_reserved.addDeclaration("enddeclare");
+	_reserved.addDeclaration("endfor");
+	_reserved.addDeclaration("endforeach");
+	_reserved.addDeclaration("endif");
+	_reserved.addDeclaration("endswitch");
+	_reserved.addDeclaration("endwhile");
+	_reserved.addDeclaration("extends");
+	_reserved.addDeclaration("final");
+	_reserved.addDeclaration("global");
+	_reserved.addDeclaration("goto");
+	_reserved.addDeclaration("implements");
+	_reserved.addDeclaration("interface");
+	_reserved.addDeclaration("instanceof");
+	_reserved.addDeclaration("namespace");
+	_reserved.addDeclaration("new");
+	_reserved.addDeclaration("old_function");
+	_reserved.addDeclaration("or");
+	_reserved.addDeclaration("private");
+	_reserved.addDeclaration("protected");
+	_reserved.addDeclaration("try");
+	_reserved.addDeclaration("use");
+	_reserved.addDeclaration("while");
+	_reserved.addDeclaration("xor");
+
+	_reserved.addDeclaration("__CLASS__");
+	_reserved.addDeclaration("__DIR__");
+	_reserved.addDeclaration("__FILE__");
+	_reserved.addDeclaration("__FUNCTION__");
+	_reserved.addDeclaration("__METHOD__");
+	_reserved.addDeclaration("__NAMESPACE__");
+
+	_reserved.addDeclaration("die");
+	_reserved.addDeclaration("empty");
+	_reserved.addDeclaration("exit");
+	_reserved.addDeclaration("eval");
+	_reserved.addDeclaration("include");
+	_reserved.addDeclaration("include_once");
+	_reserved.addDeclaration("isset");
+	_reserved.addDeclaration("list");
+	_reserved.addDeclaration("require");
+	_reserved.addDeclaration("require_once");
+	_reserved.addDeclaration("print");
+	_reserved.addDeclaration("unset");
 }
 
 void Parser::_prepareRequired(){
