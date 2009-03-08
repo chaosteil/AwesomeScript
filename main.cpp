@@ -33,6 +33,14 @@ void help(int argc, const char** argv){
 				 "\tstandard input/output is used for the specified stream (for piping)." << std::endl;
 }
 
+void noMemory(){
+	std::cerr << "Not enough memory on initialization. Abort." << std::endl;
+}
+
+void invalidParam(){
+	std::cerr << "Invalid parameters. Abort." << std::endl;
+}
+
 /* ==============================================================================
  * M A I N
  * ============================================================================*/
@@ -55,7 +63,7 @@ int main(int argc, const char** argv){
 				varprefix = argv[currentarg];
 				currentarg++;
 			}else{
-				std::cerr << "Invalid parameters." << std::endl;
+				noMemory();
 				return 2;
 			}
 		}
@@ -66,7 +74,7 @@ int main(int argc, const char** argv){
 				funcprefix = argv[currentarg];
 				currentarg++;
 			}else{
-				std::cerr << "Invalid parameters." << std::endl;
+				invalidParam();
 				return 2;
 			}
 		}
@@ -87,13 +95,13 @@ int main(int argc, const char** argv){
 				currentarg++;
 				input = new std::stringstream();
 				if(!input){
-					std::cerr << "Couldn't allocate enough memory." << std::endl;
+					noMemory();
 					return 1;
 				}
 				*static_cast<std::stringstream*>(input) << argv[currentarg];
 				currentarg++;
 			}else{
-				std::cerr << "Invalid parameters." << std::endl;
+				invalidParam();
 				return 2;
 			}
 
@@ -101,7 +109,7 @@ int main(int argc, const char** argv){
 		}else{
 			input = new std::ifstream(argv[currentarg]);
 			if(!input){
-				std::cerr << "Couldn't allocate enough memory." << std::endl;
+				noMemory();
 				return 1;
 			}
 			if(!static_cast<std::ifstream*>(input)->is_open() ||
@@ -123,7 +131,7 @@ int main(int argc, const char** argv){
 			}else{
 				output = new std::ofstream(argv[currentarg]);
 				if(!output){
-					std::cerr << "Couldn't allocate enough memory." << std::endl;
+					noMemory();
 					return 1;
 				}
 				currentarg++;
