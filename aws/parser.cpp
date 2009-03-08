@@ -33,7 +33,7 @@ Parser::Parser(std::istream& input, std::ostream& output)
 	// Start tokenizer and read first token
 	_tokenizer = new Tokenizer(_input);
 	if(!_tokenizer)
-		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing");
+		_generateException(NoMemory);
 	_readNextToken();
 
 	// Default state, should finish with only default state in stack
@@ -46,11 +46,11 @@ Parser::~Parser() throw(Exception){
 	
 	// We didn't left our state yet
 	if((_states.top() != Default))
-		throw Exception(Exception::SyntaxError, "Code is incomplete");
+		_generateException(Unfinished);
 	
 	const std::list<_FunctionReference>* functions = _functions.getReferences();
 	if(functions && functions->size() > 0){
-		throw Exception(Exception::ParsingError, functions->front().getName());
+		_generateException(UndeclaredFunction, functions->front().getName());
 	}
 
 	_states.pop();
@@ -68,7 +68,7 @@ Statement* Parser::readStatement(){
 			return _parseStatementVar();
 		*/
 
-		throw Exception(Exception::ParsingError, "Expected Function declaration");
+		_generateException(InvalidStatement, "not function");
 
 	}else if(_states.top() != Default){ // Everything in a function
 
@@ -78,12 +78,12 @@ Statement* Parser::readStatement(){
 			if(_currentToken->is(Token::Word, "break"))
 				if(_states.top() == Loop)
 					return _parseStatementBreak();
-				else throw Exception(Exception::ParsingError, "\"break\" only allowed in loops.");
+				else _generateException(InvalidStatement, "break");
 
 			if(_currentToken->is(Token::Word, "continue"))
 				if(_states.top() == Loop)
 					return _parseStatementContinue();
-				else throw Exception(Exception::ParsingError, "\"continue\" only allowed in loops.");
+				else _generateException(InvalidStatement, "continue");
 
 			if(_currentToken->getValue().compare("return") == 0)
 				return _parseStatementReturn();
@@ -92,7 +92,7 @@ Statement* Parser::readStatement(){
 				return _parseStatementBlock();
 
 			if(_currentToken->getType() != Token::Word)
-				throw Exception(Exception::ParsingError, "Expected Statement");
+				_generateException(InvalidStatement);
 
 			if(_currentToken->getValue().compare("if") == 0)
 				return _parseStatementIf();
@@ -129,7 +129,7 @@ Statement* Parser::_parseStatementBlock(){
 	
 	std::list<Statement*>* statements = new std::list<Statement*>();
 	if(!statements)
-		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+		_generateException(NoMemory);
 	
 	while(!_isFinished() && !_currentToken->is(Token::Symbol, "}")){
 		statements->push_back(readStatement());
@@ -146,10 +146,10 @@ Statement* Parser::_parseStatementFunction(){
 	_checkUnexpectedEnd();
 	
 	if(_currentToken->getType() != Token::Word)
-		throw Exception(Exception::ParsingError, "Expected function name");
+		_generateException(ExpectedFunction);
 	
 	if(_reserved.isDeclared(_currentToken->getValue()) == Reference<std::string>::IsDeclared)
-		throw Exception(Exception::ParsingError, "Using reserved word as function name");
+		_generateException(InvalidReservedWord, "function");
 
 	std::string name = _currentToken->getValue();
 	_readNextToken();
@@ -158,17 +158,17 @@ Statement* Parser::_parseStatementFunction(){
 	
 	std::list<Variable*>* variables = new std::list<Variable*>();
 	if(!variables)
-		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+		_generateException(NoMemory);
 
 	if(_variableScope == NULL)
 		_variableScope = new Reference<std::string>();
 
 	if(!_currentToken->is(Token::Symbol, ")")){
 		if(_currentToken->getType() != Token::Word)
-			throw Exception(Exception::ParsingError, "Expected Variable");
+			_generateException(ExpectedSymbol, ")");
 
 		if(_reserved.isDeclared(_currentToken->getValue()) == Reference<std::string>::IsDeclared)
-			throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+			_generateException(InvalidReservedWord, "variable");
 				
 		variables->push_back(new Variable(_currentToken->getValue()));
 		_variableScope->addDeclaration(_currentToken->getValue());
@@ -177,25 +177,25 @@ Statement* Parser::_parseStatementFunction(){
 		while(!_isFinished() && _currentToken->is(Token::Symbol, ",")){
 			_readNextToken();
 			if(_currentToken->getType() != Token::Word)
-				throw Exception(Exception::ParsingError, "Expected Variable Name");
+				_generateException(ExpectedVariable);
 
 			if(_reserved.isDeclared(_currentToken->getValue()) == Reference<std::string>::IsDeclared)
-				throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+				_generateException(InvalidReservedWord, "variable");
 
 			variables->push_back(new Variable(_currentToken->getValue()));
 			if(_variableScope->addDeclaration(_currentToken->getValue()) == Reference<std::string>::AlreadyDeclared)
-				throw Exception(Exception::ParsingError, "Variable cannot be declared twice in function header");
+				_generateException(InvalidDeclaration, "variable");
 			_readNextToken();
 		}
 		
 		_checkUnexpectedEnd();
 		if(!_currentToken->is(Token::Symbol, ")"))
-			throw Exception(Exception::ParsingError, "Incorrect function declaration");
+			_generateException(ExpectedSymbol, ")");
 	}
 
 	Reference<_FunctionReference>::ReferenceStatus status = _functions.addDeclaration(_FunctionReference(name, variables->size(), _FunctionReference::Declaration));
 	if(status == Reference<_FunctionReference>::AlreadyDeclared)
-		throw Exception(Exception::ParsingError, "Function already declared");
+		_generateException(InvalidDeclaration, "function");
 	
 	_readNextToken();
 	_checkUnexpectedEnd();
@@ -217,7 +217,7 @@ Statement* Parser::_parseStatementIf(){
 	_checkUnexpectedEnd();
 
 	if(!_currentToken->is(Token::Symbol, "("))
-		throw Exception(Exception::ParsingError, "Expected ( after if statement");
+		_generateException(ExpectedSymbol, "(");
 
 	Expression* expression = _parseExpressionGroup();
 	Statement* trueBlock = NULL;
@@ -238,7 +238,7 @@ Statement* Parser::_parseStatementWhile(){
 	_checkUnexpectedEnd();
 
 	if(!_currentToken->is(Token::Symbol, "("))
-		throw Exception(Exception::ParsingError, "Expected ( after while statement.");
+		_generateException(ExpectedSymbol, "(");
 
 	// First we get the expression at the beginning of the while
 	Expression* group = _parseExpressionGroup();
@@ -262,7 +262,7 @@ Statement* Parser::_parseStatementDoWhile(){
 	_checkUnexpectedEnd();
 
 	if(!_currentToken->is(Token::Symbol, "("))
-		throw Exception(Exception::ParsingError, "Expected ( after while statement.");
+		_generateException(ExpectedSymbol, "(");
 
 	Expression* group = _parseExpressionGroup();
 
@@ -313,16 +313,16 @@ Statement* Parser::_parseStatementVar(){
 
 	std::list<Assignment*>* variables = new std::list<Assignment*>();
 	if(!variables)
-		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+		_generateException(NoMemory);
 
 	while(!_isFinished()){
 		if(_currentToken->getType() != Token::Word)
-			throw Exception(Exception::ParsingError, "Expected variable name after var statement.");
+			_generateException(ExpectedVariable);
 		
 
 		// We get the name and check what follows
 		if(_reserved.isDeclared(_currentToken->getValue()) == Reference<std::string>::IsDeclared)
-			throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+			_generateException(InvalidReservedWord, "variable");
 		std::string name = _currentToken->getValue();
 		_variableScope->addDeclaration(name);
 
@@ -362,7 +362,7 @@ Statement* Parser::_parseStatementVar(){
 		}
 
 		// No valid symbols!
-		throw Exception(Exception::ParsingError, "Expected end of variable declaration.");
+		_generateException(ExpectedSymbol, ";");
 	}
 	_checkUnexpectedEnd();
 
@@ -371,7 +371,7 @@ Statement* Parser::_parseStatementVar(){
 
 Statement* Parser::_parseStatementFunctionCallOrAssignment(){
 	if(_reserved.isDeclared(_currentToken->getValue()) == Reference<std::string>::IsDeclared)
-		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+		_generateException(InvalidReservedWord, "variable");
 
 	std::string name = _currentToken->getValue();
 	_readNextToken();
@@ -384,7 +384,7 @@ Statement* Parser::_parseStatementFunctionCallOrAssignment(){
 		return _parseStatementArray(name);
 
 	if(_variableScope->addReference(name) != Reference<std::string>::AlreadyDeclared)
-		throw Exception(Exception::ParsingError, "Variable not declared");
+		_generateException(UndeclaredVariable, name);
 	return _parseStatementOperations(new Variable(name));
 
 	return NULL;
@@ -415,19 +415,21 @@ Statement* Parser::_parseStatementOperations(const Variable* name){
 	if(_currentToken->is(Token::Symbol, "--"))
 		return _parseStatementDecrease(name);
 	
-	throw Exception(Exception::ParsingError, "Expected variable operation.");
+	_generateException(ExpectedOperation);
+
+	return NULL;
 }
 
 Statement* Parser::_parseStatementFunctionCall(const std::string& name){
 	if(_reserved.isDeclared(name) == Reference<std::string>::IsDeclared)
-		throw Exception(Exception::ParsingError, "Using reserved word as function name");
+		_generateException(InvalidReservedWord);
 
 	FunctionCall* call = _parseFunctionCall(name);
 
 	// If we are in the special statement state, we don't expect a ;
 	if(_states.top() != SpecialStatement){
 		if(!_currentToken->is(Token::Symbol, ";"))
-			throw Exception(Exception::ParsingError, "Expected \";\" after function call");
+			_generateException(ExpectedSymbol, ";");
 	
 		_readNextToken();
 	}
@@ -436,12 +438,12 @@ Statement* Parser::_parseStatementFunctionCall(const std::string& name){
 
 Statement* Parser::_parseStatementArray(const std::string& name){
 	if(_reserved.isDeclared(name) == Reference<std::string>::IsDeclared)
-		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+		_generateException(InvalidReservedWord, "variable");
 	_variableScope->addDeclaration(name);
 	
 	std::list<Expression*>* expressions = new std::list<Expression*>();
 	if(!expressions)
-		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+		_generateException(NoMemory);
 
 	// We go through all referenced elements.
 	while(42){
@@ -577,7 +579,7 @@ Statement* Parser::_parseStatementBreak(){
 	_checkUnexpectedEnd();
 	
 	if(!_currentToken->is(Token::Symbol, ";"))
-		throw Exception(Exception::ParsingError, "Expected \";\" after \"break\"");
+		_generateException(ExpectedSymbol, ";");
 
 	_readNextToken();
 	return new BreakStatement();
@@ -588,7 +590,7 @@ Statement* Parser::_parseStatementContinue(){
 	_checkUnexpectedEnd();
 	
 	if(!_currentToken->is(Token::Symbol, ";"))
-		throw Exception(Exception::ParsingError, "Expected \";\" after \"continue\"");
+		_generateException(ExpectedSymbol, ";");
 	
 	_readNextToken();
 	return new ContinueStatement();
@@ -606,7 +608,7 @@ Statement* Parser::_parseStatementReturn(){
 
 	_checkUnexpectedEnd();
 	if(!_currentToken->is(Token::Symbol, ";")){
-		throw Exception(Exception::ParsingError, "Expected \";\" after \"return\"");
+		_generateException(ExpectedSymbol, ";");
 	}
 
 	_readNextToken();
@@ -624,7 +626,7 @@ Expression* Parser::_parseExpressionAnd(){
 		_readNextToken(); // Skip "&&"
 		node = new AndExpression(node, _parseExpressionOr());
 		if(!node)
-			throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+			_generateException(NoMemory);
 	}
 
 	return node;
@@ -637,7 +639,7 @@ Expression* Parser::_parseExpressionOr(){
 		_readNextToken(); // Skip "||"
 		node = new OrExpression(node, _parseExpressionComparison());
 		if(!node)
-			throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+			_generateException(NoMemory);
 	}
 
 	return node;
@@ -677,12 +679,12 @@ Expression* Parser::_parseExpressionAddition(){
 			_readNextToken();
 			node = new Addition(node, _parseExpressionMultiplication());
 			if(!node)
-				throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+				_generateException(NoMemory);
 		}else if(_currentToken->is(Token::Symbol, "-")){
 			_readNextToken();
 			node = new Substraction(node, _parseExpressionMultiplication());
 			if(!node)
-				throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+				_generateException(NoMemory);
 		}else
 			break;
 	}
@@ -698,17 +700,17 @@ Expression* Parser::_parseExpressionMultiplication(){
 			_readNextToken();
 			node = new Multiplication(node, _parseExpressionUnary());
 			if(!node)
-				throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+				_generateException(NoMemory);
 		}else if(_currentToken->is(Token::Symbol, "/")){
 			_readNextToken();
 			node = new Division(node, _parseExpressionUnary());
 			if(!node)
-				throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+				_generateException(NoMemory);
 		}else if(_currentToken->is(Token::Symbol, "%")){
 			_readNextToken();
 			node = new Modulus(node, _parseExpressionUnary());
 			if(!node)
-				throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+				_generateException(NoMemory);
 		}else
 			break;
 	}
@@ -749,8 +751,10 @@ Expression* Parser::_parseExpressionBase(){
 	else{ // Token::Symbol
 		if(_currentToken->getValue().compare("(") == 0)
 			return _parseExpressionGroup();
-		else throw Exception(Exception::ParsingError, "Incorrect Expression");
+		else _generateException(InvalidExpression);
 	}
+
+	return NULL;
 }
 
 Expression* Parser::_parseExpressionGroup(){
@@ -765,7 +769,7 @@ Expression* Parser::_parseExpressionGroup(){
 
 Expression* Parser::_parseExpressionVariableOrFunctionCall(){
 	if(_reserved.isDeclared(_currentToken->getValue()) == Reference<std::string>::IsDeclared)
-		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+		_generateException(InvalidReservedWord, "variable");
 
 	std::string name = _currentToken->getValue();
 
@@ -775,7 +779,7 @@ Expression* Parser::_parseExpressionVariableOrFunctionCall(){
 		return _parseFunctionCall(name);
 	
 	if(_variableScope->addReference(name) != Reference<std::string>::AlreadyDeclared)
-		throw Exception(Exception::ParsingError, "Variable was not declared before first use");
+		_generateException(UndeclaredVariable, name);
 
 	if(!_isFinished() && _currentToken->is(Token::Symbol, "["))
 		return _parseExpressionArrayAccess(name);
@@ -796,7 +800,9 @@ Expression* Parser::_parseExpressionNumberConstant(){
 		_readNextToken();
 		return new NumberConstant(value);
 	}else
-		throw Exception(Exception::ParsingError, "Incorrect number declaration");
+		_generateException(InvalidNumber);
+
+	return NULL;
 }
 
 Expression* Parser::_parseExpressionBooleanConstant(){
@@ -821,7 +827,7 @@ Expression* Parser::_parseExpressionArray(){
 
 	std::list<Expression*>* arguments = new std::list<Expression*>();
 	if(!arguments)
-		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+		_generateException(NoMemory);
 	if(!_currentToken->is(Token::Symbol, "]")){
 		arguments->push_back(_parseExpression());
 		_checkUnexpectedEnd();
@@ -840,7 +846,7 @@ Expression* Parser::_parseExpressionArray(){
 		}
 		
 		if(!_currentToken->is(Token::Symbol, "]"))
-			throw Exception(Exception::ParsingError, "Array declaration incorrect");			
+			_generateException(ExpectedSymbol, "]");
 	}
 
 	_readNextToken(); // Skip ']'
@@ -853,7 +859,7 @@ Expression* Parser::_parseExpressionAssociativeArray(){
 
 	std::list<Assignment*>* values = new std::list<Assignment*>();
 	if(!values)
-		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+		_generateException(NoMemory);
 	if(!_currentToken->is(Token::Symbol, "}")){
 		values->push_back(_parseExpressionAssociativeArrayPair());
 		_checkUnexpectedEnd();
@@ -866,7 +872,7 @@ Expression* Parser::_parseExpressionAssociativeArray(){
 		}
 		
 		if(!_currentToken->is(Token::Symbol, "}"))
-			throw Exception(Exception::ParsingError, "Associative Array declaration incorrect");			
+			_generateException(ExpectedSymbol, "}");
 	}
 
 	_readNextToken(); // Skip '}'
@@ -875,19 +881,19 @@ Expression* Parser::_parseExpressionAssociativeArray(){
 
 Nodes::Assignment* Parser::_parseExpressionAssociativeArrayPair(){
 	if(_currentToken->getType() != Token::String && _currentToken->getType() != Token::Word)
-		throw Exception(Exception::ParsingError, "Expected key");
+		_generateException(ExpectedKey);
 
 	if(_reserved.isDeclared(_currentToken->getValue()) == Reference<std::string>::IsDeclared)
-		throw Exception(Exception::ParsingError, "Using reserved word as key");
+		_generateException(InvalidReservedWord, "key");
 
 	Variable* var = new Variable(_currentToken->getValue());
 	if(!var)
-		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+		_generateException(NoMemory);
 
 	_readNextToken();
 	_checkUnexpectedEnd();
 	if(!_currentToken->is(Token::Symbol, ":"))
-		throw Exception(Exception::ParsingError, "Expected value assignment");
+		_generateException(ExpectedSymbol, ":");
 	_states.push(SpecialStatement);
 	Assignment* value = static_cast<Assignment*>(_parseStatementAssignment(var));
 	_states.pop();
@@ -898,14 +904,14 @@ Nodes::Assignment* Parser::_parseExpressionAssociativeArrayPair(){
 
 Expression* Parser::_parseExpressionArrayAccess(const std::string& name){
 	if(_reserved.isDeclared(name) == Reference<std::string>::IsDeclared)
-		throw Exception(Exception::ParsingError, "Using reserved word as variable name");
+		_generateException(InvalidReservedWord, "variable");
 
 	if(_variableScope->addReference(name) != Reference<std::string>::AlreadyDeclared)
-		throw Exception(Exception::ParsingError, "Variable not declared before first use.");
+		_generateException(UndeclaredVariable, name);
 
 	std::list<Expression*>* expressions = new std::list<Expression*>();
 	if(!expressions)
-		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+		_generateException(NoMemory);
 
 	// We go through all referenced elements.
 	while(42){
@@ -925,14 +931,16 @@ Expression* Parser::_parseExpressionArrayAccess(const std::string& name){
 
 FunctionCall* Parser::_parseFunctionCall(const std::string& name){
 	if(_reserved.isDeclared(name) == Reference<std::string>::IsDeclared)
-		throw Exception(Exception::ParsingError, "Using reserved word as function name");
+		_generateException(InvalidReservedWord, "function");
 
 	_readNextToken(); // Skip '('
 	_checkUnexpectedEnd();
 
 	std::list<Expression*>* arguments = new std::list<Expression*>();
-	if(!arguments)
-		throw Exception(Exception::MemoryError, "Couldn't allocate enough memory for parsing.");
+	if(arguments == NULL){
+		_generateException(NoMemory);
+	}
+
 	if(!_currentToken->is(Token::Symbol, ")")){
 		arguments->push_back(_parseExpression());
 
@@ -943,12 +951,88 @@ FunctionCall* Parser::_parseFunctionCall(const std::string& name){
 		}
 		
 		if(!_currentToken->is(Token::Symbol, ")"))
-			throw Exception(Exception::ParsingError, "Function call incorrect");
+			_generateException(ExpectedSymbol, ")");
 	}
-	_functions.addReference(_FunctionReference(name, arguments->size(), _FunctionReference::Reference));
+
+	try{
+		_functions.addReference(_FunctionReference(name, arguments->size(), _FunctionReference::Reference));
+	}catch(Exception e){
+		_generateException(InvalidCall, "main");
+		return NULL;
+	}
 
 	_readNextToken(); // Skip ')'
 	return new FunctionCall(name, arguments);
+}
+
+void Parser::_generateException(_Error error, const std::string& message, long line){
+	int errorcode = static_cast<int>(Exception::ParsingError);
+
+	std::stringstream build;
+	
+	if(error == NoMemory){
+		build << (errorcode+static_cast<int>(NoMemory)) << std::endl;
+	}else if(error == Unfinished){
+		build << (errorcode+static_cast<int>(Unfinished)) << std::endl;
+		build << "Code is not finished." << std::endl;
+	}else if(error == ExpectedFunction){
+		build << (errorcode+static_cast<int>(ExpectedFunction)) << std::endl;
+		build << "Expected function." << std::endl;
+	}else if(error == InvalidStatement){
+		build << (errorcode+static_cast<int>(InvalidStatement)) << std::endl;
+		build << "Invalid Statement: is " << message << "." << std::endl;
+	}else if(error == InvalidReservedWord){
+		build << (errorcode+static_cast<int>(InvalidReservedWord)) << std::endl;
+		build << "Used reserved word as " << message << "." << std::endl;
+	}else if(error == ExpectedVariable){
+		build << (errorcode+static_cast<int>(ExpectedVariable)) << std::endl;
+		build << "Expected variable." << std::endl;
+	}else if(error == InvalidDeclaration){
+		build << (errorcode+static_cast<int>(InvalidDeclaration)) << std::endl;
+		build << "Invalid declaration of " << message << "." << std::endl;
+	}else if(error == UndeclaredVariable){
+		build << (errorcode+static_cast<int>(UndeclaredVariable)) << std::endl;
+		build << "Usage of undeclared variable \"" << message << "\"." << std::endl;
+	}else if(error == UndeclaredFunction){
+		build << (errorcode+static_cast<int>(UndeclaredFunction)) << std::endl;
+		build << "Usage of undeclared function \"" << message << "\"." << std::endl;
+	}else if(error == ExpectedOperation){
+		build << (errorcode+static_cast<int>(ExpectedOperation)) << std::endl;
+		build << "Expected operation." << std::endl;
+	}else if(error == InvalidExpression){
+		build << (errorcode+static_cast<int>(InvalidExpression)) << std::endl;
+		build << "Invalid expression." << std::endl;
+	}else if(error == InvalidNumber){
+		build << (errorcode+static_cast<int>(InvalidNumber)) << std::endl;
+		build << "Invalid Number." << std::endl;
+	}else if(error == InvalidCall){
+		build << (errorcode+static_cast<int>(InvalidCall)) << std::endl;
+		build << "Invalid Call to \"" << message << "\"" << std::endl;
+	}else if(error == ExpectedSymbol){
+		build << (errorcode+static_cast<int>(ExpectedSymbol)) << std::endl;
+		build << "Expected \"" << message << "\", got ";
+		if(_currentToken != NULL){
+			build << "\"" << _currentToken->getValue() << "\"";
+		}else{
+			build << "nothing";
+		}
+		build << "." << std::endl;
+	}else if(error == ExpectedKey){
+		build << (errorcode+static_cast<int>(ExpectedKey)) << std::endl;
+		build << "Expected key." << std::endl;
+	}else{
+		build << (errorcode+static_cast<int>(Unknown)) << std::endl;
+		build << "Unkown error." << std::endl;
+	}
+
+	if(line == 0){
+		if(_currentToken != NULL)
+			build << "On line: " << _currentToken->getLine() << "." << std::endl;
+	}else{
+		build << "On line: " << line << "." << std::endl;
+	}
+
+	throw Exception(Exception::ParsingError, build.str());
 }
 
 template <class T>
@@ -976,16 +1060,13 @@ void Parser::_skipToken(Token::TokenType type, const std::string& value) throw(E
 		_readNextToken();
 		return;
 	}else{
-		// Throw an error
-		std::stringstream message;
-		message << "Unexpected \"" << _currentToken->getValue() << "\", expected \"" << value << "\"";
-		throw Exception(Exception::SyntaxError, message.str());
+		_generateException(ExpectedSymbol, value);
 	}
 }
 
 void Parser::_checkUnexpectedEnd() throw(Exception){
 	if(_isFinished()){
-		throw Exception(Exception::SyntaxError, "Parser: Unexpected end of source.");
+		_generateException(Unfinished);
 	}
 }
 
@@ -1043,7 +1124,7 @@ bool Parser::_FunctionReference::operator==(const _FunctionReference& reference)
 	if(reference.getName() == "main"){
 		// We do not want any reference of main
 		if(reference.getType() == Reference)
-			throw Exception(Exception::ParsingError, "Function Call to main.");
+			throw Exception(Exception::ParsingError, "Invalid call to main.");
 
 		if(reference.getParams() != 0)
 			return false;

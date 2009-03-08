@@ -89,6 +89,28 @@ namespace AwS{
 			Nodes::Expression* _parseExpressionArrayAccess(const std::string& name);
 			Nodes::FunctionCall* _parseFunctionCall(const std::string& name);
 
+
+			enum _Error{
+				Unknown = 0,
+				NoMemory,
+				Unfinished,
+				ExpectedFunction,
+				InvalidStatement,
+				InvalidReservedWord,
+				ExpectedVariable,
+				InvalidDeclaration,
+				UndeclaredVariable,
+				UndeclaredFunction,
+				ExpectedOperation,
+				InvalidExpression,
+				InvalidNumber,
+				InvalidCall,
+				ExpectedSymbol,
+				ExpectedKey
+			};
+
+			void _generateException(_Error error, const std::string& message = "", long line = 0);
+
 			template <class T>
 			static bool _convertString(T& t, const std::string& s, std::ios_base& (*f)(std::ios_base&));
 
