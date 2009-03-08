@@ -9,13 +9,14 @@
  */
 
 #include <iostream>
+#include <string>
 #include "exception.h"
 #include "nodes/translatesettings.h"
 
 namespace AwS{
 	class Translator{
 		public:
-			Translator(std::istream& input, std::ostream& output);
+			Translator(std::istream& input, std::ostream& output, const std::string& varprefix = "", const std::string& funcprefix = "");
 			~Translator();
 
 			void translate();

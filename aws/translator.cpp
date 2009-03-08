@@ -22,8 +22,8 @@ using namespace AwS;
  * P U B L I C   M E T H O D S
  * ============================================================================*/
 
-Translator::Translator(std::istream& input, std::ostream& output)
-	: _input(input), _output(output){
+Translator::Translator(std::istream& input, std::ostream& output, const std::string& varprefix, const std::string& funcprefix)
+	: _input(input), _output(output), _settings(varprefix, funcprefix){
 }
 
 Translator::~Translator(){

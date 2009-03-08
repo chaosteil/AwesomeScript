@@ -27,10 +27,10 @@ void help(int argc, const char** argv){
 	std::cerr << "Converts awesomescript into php code" << std::endl <<
 				 std::endl;
 	std::cerr << "Please specify a string to parse." << std::endl;
-	std::cerr << "Usage: " << argv[0] << "[-h] [-i string|filename] [output]" << std::endl <<
+	std::cerr << "Usage: " << argv[0] << " [-h] [-v prefix] [-f prefix] [-i string|filename] [output]" << std::endl <<
 				 std::endl;
-	std::cerr << "If filename or output are \"-\" or nothing, then the" << std::endl <<
-				 "standard input/output is used for the specified stream (for piping)." << std::endl;
+	std::cerr << "\tIf filename or output are \"-\" or nothing, then the" << std::endl <<
+				 "\tstandard input/output is used for the specified stream (for piping)." << std::endl;
 }
 
 /* ==============================================================================
@@ -40,10 +40,36 @@ int main(int argc, const char** argv){
 	// Get where the input and output does come from
 	std::istream* input = NULL;
 	std::ostream* output = NULL;
+	// Prefixes
+	std::string varprefix("");
+	std::string funcprefix("");
 
 	// Are there any additional arguments specified?
 	if(argc > 1){
 		int currentarg = 1;
+		// PREFIXES
+		// Variable prefixes
+		if((strncmp(argv[currentarg], "-v", 3) == 0) || (strncmp(argv[currentarg], "--var", 6) == 0)){
+			if(argc > currentarg+1){
+				currentarg++;
+				varprefix = argv[currentarg];
+				currentarg++;
+			}else{
+				std::cerr << "Invalid parameters." << std::endl;
+				return 2;
+			}
+		}
+		// Function prefixes
+		if((strncmp(argv[currentarg], "-f", 3) == 0) || (strncmp(argv[currentarg], "--func", 7) == 0)){
+			if(argc > currentarg+1){
+				currentarg++;
+				funcprefix = argv[currentarg];
+				currentarg++;
+			}else{
+				std::cerr << "Invalid parameters." << std::endl;
+				return 2;
+			}
+		}
 
 		// INPUT
 		// We print help and immediately exit
@@ -66,6 +92,9 @@ int main(int argc, const char** argv){
 				}
 				*static_cast<std::stringstream*>(input) << argv[currentarg];
 				currentarg++;
+			}else{
+				std::cerr << "Invalid parameters." << std::endl;
+				return 2;
 			}
 
 		// Nothing left, we use a file
@@ -79,7 +108,7 @@ int main(int argc, const char** argv){
 				static_cast<std::ifstream*>(input)->fail()){
 				
 				std::cerr << "File \"" << currentarg << "\" does not exist or could not be read." << std::endl;
-				return 2;
+				return 3;
 			}
 			currentarg++;
 		}
@@ -111,7 +140,7 @@ int main(int argc, const char** argv){
 	}
 
 	// Test output
-	AwS::Translator translator(*input, *output);
+	AwS::Translator translator(*input, *output, varprefix, funcprefix);
 	translator.translate();
 
 	// Clear up memory if standard input/output wasn't used
