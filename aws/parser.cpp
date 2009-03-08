@@ -966,50 +966,35 @@ FunctionCall* Parser::_parseFunctionCall(const std::string& name){
 }
 
 void Parser::_generateException(_Error error, const std::string& message, long line){
-	int errorcode = static_cast<int>(Exception::ParsingError);
-
 	std::stringstream build;
 	
 	if(error == NoMemory){
-		build << (errorcode+static_cast<int>(NoMemory)) << std::endl;
+		build << "Not enough memory. Please try again later." << std::endl;
 	}else if(error == Unfinished){
-		build << (errorcode+static_cast<int>(Unfinished)) << std::endl;
 		build << "Code is not finished." << std::endl;
 	}else if(error == ExpectedFunction){
-		build << (errorcode+static_cast<int>(ExpectedFunction)) << std::endl;
 		build << "Expected function." << std::endl;
 	}else if(error == InvalidStatement){
-		build << (errorcode+static_cast<int>(InvalidStatement)) << std::endl;
 		build << "Invalid Statement: is " << message << "." << std::endl;
 	}else if(error == InvalidReservedWord){
-		build << (errorcode+static_cast<int>(InvalidReservedWord)) << std::endl;
 		build << "Used reserved word as " << message << "." << std::endl;
 	}else if(error == ExpectedVariable){
-		build << (errorcode+static_cast<int>(ExpectedVariable)) << std::endl;
 		build << "Expected variable." << std::endl;
 	}else if(error == InvalidDeclaration){
-		build << (errorcode+static_cast<int>(InvalidDeclaration)) << std::endl;
 		build << "Invalid declaration of " << message << "." << std::endl;
 	}else if(error == UndeclaredVariable){
-		build << (errorcode+static_cast<int>(UndeclaredVariable)) << std::endl;
 		build << "Usage of undeclared variable \"" << message << "\"." << std::endl;
 	}else if(error == UndeclaredFunction){
-		build << (errorcode+static_cast<int>(UndeclaredFunction)) << std::endl;
 		build << "Usage of undeclared function \"" << message << "\"." << std::endl;
 	}else if(error == ExpectedOperation){
-		build << (errorcode+static_cast<int>(ExpectedOperation)) << std::endl;
 		build << "Expected operation." << std::endl;
 	}else if(error == InvalidExpression){
-		build << (errorcode+static_cast<int>(InvalidExpression)) << std::endl;
 		build << "Invalid expression." << std::endl;
 	}else if(error == InvalidNumber){
-		build << (errorcode+static_cast<int>(InvalidNumber)) << std::endl;
 		build << "Invalid Number." << std::endl;
 	}else if(error == InvalidCall){
-		build << (errorcode+static_cast<int>(InvalidCall)) << std::endl;
 		build << "Invalid Call to \"" << message << "\"" << std::endl;
 	}else if(error == ExpectedSymbol){
-		build << (errorcode+static_cast<int>(ExpectedSymbol)) << std::endl;
 		build << "Expected \"" << message << "\", got ";
 		if(_currentToken != NULL){
 			build << "\"" << _currentToken->getValue() << "\"";
@@ -1018,10 +1003,8 @@ void Parser::_generateException(_Error error, const std::string& message, long l
 		}
 		build << "." << std::endl;
 	}else if(error == ExpectedKey){
-		build << (errorcode+static_cast<int>(ExpectedKey)) << std::endl;
 		build << "Expected key." << std::endl;
 	}else{
-		build << (errorcode+static_cast<int>(Unknown)) << std::endl;
 		build << "Unkown error." << std::endl;
 	}
 
@@ -1032,7 +1015,7 @@ void Parser::_generateException(_Error error, const std::string& message, long l
 		build << "On line: " << line << "." << std::endl;
 	}
 
-	throw Exception(Exception::ParsingError, build.str());
+	throw Exception(Exception::ParsingError, static_cast<int>(error), build.str());
 }
 
 template <class T>
@@ -1124,7 +1107,7 @@ bool Parser::_FunctionReference::operator==(const _FunctionReference& reference)
 	if(reference.getName() == "main"){
 		// We do not want any reference of main
 		if(reference.getType() == Reference)
-			throw Exception(Exception::ParsingError, "Invalid call to main.");
+			throw Exception(Exception::ParsingError, 0, "Invalid call to main.");
 
 		if(reference.getParams() != 0)
 			return false;

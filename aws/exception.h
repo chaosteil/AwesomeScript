@@ -31,9 +31,10 @@ namespace AwS{
 			//! Constructor.
 			/*!
 			 * \param type The type of the Exception, also marks the error code to be passed.
+			 * \param id The additional id of the message.
 			 * \param message The human readable error message, should provide additional information about the specific error.
 			 */
-			Exception(ExceptionType type, const std::string& message);
+			Exception(ExceptionType type, int id, const std::string& message);
 			//! Destructor.
 			~Exception();
 			//! The human readable message of this Exception.
@@ -46,8 +47,15 @@ namespace AwS{
 			 * \return The type of the Exception. Each error returns an own errortype, unique for the type of error.
 			 */
 			ExceptionType getType() const;
+
+			//! Returns the complete ID of the Exception.
+			/*!
+			 * \return The Type of the Exception + the subID of the Exception, as specified in the constructor.
+			 */
+			int getId() const;
 		private:
 			const ExceptionType _type; //!< The type of the Exception.
+			const int _id; // The subID of the exception.
 			const std::string _message; //!< The stored human readable message.
 	};
 };

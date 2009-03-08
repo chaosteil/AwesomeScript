@@ -18,7 +18,7 @@ namespace AwS{
 				NoMemory
 			};
 			NodeException(const std::string& message, NodeError error = Undefined)
-				: Exception(Exception::ConvertError, message), _error(error){
+				: Exception(Exception::ConvertError, static_cast<int>(error), message), _error(error){
 			}
 
 		private:

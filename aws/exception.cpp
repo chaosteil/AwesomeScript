@@ -17,8 +17,8 @@ using namespace AwS;
  * P U B L I C   M E T H O D S
  * ============================================================================*/
 
-Exception::Exception(ExceptionType type, const std::string& message)
-	: _type(type), _message(message)
+Exception::Exception(ExceptionType type, int id, const std::string& message)
+	: _type(type), _id(id), _message(message)
 {
 }
 
@@ -30,4 +30,8 @@ const std::string& Exception::getMessage() const{
 }
 Exception::ExceptionType Exception::getType() const{
 	return _type;
+}
+
+int Exception::getId() const{
+	return static_cast<int>(_type)+_id;
 }

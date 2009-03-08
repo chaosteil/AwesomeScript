@@ -99,7 +99,7 @@ int main(int argc, const char** argv){
 		delete parser; parser = NULL;
 	}catch(AwS::Exception e){
 		// Based on exception error code
-		output << "[!] Exception caught: " << e.getMessage() << std::endl;
+		output << "[!] Exception caught: " << e.getId() << std::endl << e.getMessage() << std::endl;
 	}
 	outfile << std::endl << "?>";
 	outfile.close();

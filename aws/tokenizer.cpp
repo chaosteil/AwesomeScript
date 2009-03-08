@@ -300,10 +300,7 @@ std::string Tokenizer::_extractString(){
 
 void Tokenizer::_checkUnexpectedEnd() throw(Exception){
 	if(_isFinished()){
-		std::stringstream errormessage;
-		errormessage << static_cast<int>(Exception::ReadingError+EndOfSource) <<
-			"\nUnexpected end of source." << std::endl;
-		throw Exception(Exception::ReadingError, errormessage.str());
+		throw Exception(Exception::ReadingError, static_cast<int>(EndOfSource), "Unexpected end of source.");
 	}
 }
 
@@ -312,14 +309,12 @@ void Tokenizer::_invalidCharacter() throw(Exception){
 
 	// If nothing is in the buffer, we just write the character
 	if(_tokenValueBuffer.str().length() == 0){
-		errormessage << static_cast<int>(Exception::ReadingError+InvalidCharacter) <<
-			"\nInvalid character '" << _currentChar << "'" << std::endl;
-		throw Exception(Exception::ReadingError, errormessage.str());
+		errormessage << "Invalid character '" << _currentChar << "'" << std::endl;
+		throw Exception(Exception::ReadingError, static_cast<int>(InvalidCharacter), errormessage.str());
 	}else{
 		// We write what's in the buffer and our invalid char
-		errormessage << static_cast<int>(Exception::ReadingError+InvalidCharacter) <<
-			"\nInvalid character '" << _currentChar << "' after '" << _tokenValueBuffer.str() << "'" << std::endl;
-		throw Exception(Exception::ReadingError, errormessage.str());
+		errormessage << "Invalid character '" << _currentChar << "' after '" << _tokenValueBuffer.str() << "'" << std::endl;
+		throw Exception(Exception::ReadingError, static_cast<int>(InvalidCharacter), errormessage.str());
 	}
 }
 
