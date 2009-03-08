@@ -30,9 +30,8 @@ namespace AwS{
 			//! Constructor.
 			/*!
 			 * \param input The stream which the parser passes to the tokenizer.
-			 * \param output The stream where the parser passes error messages.
 			 */
-			Parser(std::istream& input = std::cin, std::ostream& output = std::cout);
+			Parser(std::istream& input = std::cin);
 			//! Destructor.
 			/*!
 			 * Does NOT clean up any statements passed with readStatement().
@@ -190,7 +189,6 @@ namespace AwS{
 			Tokenizer* _tokenizer;
 			Token* _currentToken;
 			std::istream& _input;
-			std::ostream& _output;
 	};
 };
 

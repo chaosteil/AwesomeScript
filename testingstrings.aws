@@ -7,7 +7,7 @@ function plus(a, b) return a + b;
 
 function main(){
 	x(1);
-	main();
+	//main();
 }
 
 function y(a, b){

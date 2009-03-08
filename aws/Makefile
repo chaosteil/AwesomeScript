@@ -4,7 +4,7 @@
 
 include ../Makefile.common
 
-OBJECTS = exception.o parser.o token.o tokenizer.o
+OBJECTS = exception.o parser.o token.o tokenizer.o translator.o
 INCLUDE = -Inodes
 
 all: $(OBJECTS)

@@ -21,8 +21,8 @@ using namespace AwS::Nodes;
  * P U B L I C   M E T H O D S
  * ============================================================================*/
 
-Parser::Parser(std::istream& input, std::ostream& output)
-	: _variableScope(NULL), _tokenizer(NULL), _currentToken(NULL), _input(input), _output(output) {
+Parser::Parser(std::istream& input)
+	: _variableScope(NULL), _tokenizer(NULL), _currentToken(NULL), _input(input){
 	// Prepare all the reserved words so variables and functions don't adapt weird names
 	_prepareReserved();
 	// Prepare required functions or variables the user has to use.

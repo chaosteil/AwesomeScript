@@ -19,5 +19,6 @@ namespace AwS{};
 #include "parser.h"
 #include "token.h"
 #include "tokenizer.h"
+#include "translator.h"
 
 #endif

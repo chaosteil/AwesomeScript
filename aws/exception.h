@@ -22,7 +22,7 @@ namespace AwS{
 			//! A type for each exception
 			enum ExceptionType{
 				None = 0, //!< No error (No exception)
-				MemoryError = 100, //!< Uh oh! Not enough memory
+				DefaultError = 100, //!< Default Error for everything unrelated directly to AwS
 				ReadingError = 200, //!< Default Syntax Error.
 				ParsingError = 300, //!< Default Parsing Error.
 				ConvertError = 400 //!< Default Converting Error.

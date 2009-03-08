@@ -26,19 +26,14 @@
 void help(int argc, const char** argv){
 	std::cout << "AwsesomeScript translator" << std::endl;
 	std::cout << "Converts awesomescript into php code" << std::endl << std::endl;
-	std::cout << "Please specify a string to tokenize." << std::endl;
-	std::cout << "Usage: " << argv[0] << " -i string" << std::endl;
-	std::cout << "       " << argv[0] << " filename" << std::endl;
+	std::cout << "Please specify a string to parse." << std::endl;
+	std::cout << "Usage: " << argv[0] << "[-i] string" << std::endl;
 }
 
 /* ==============================================================================
  * M A I N
  * ============================================================================*/
 int main(int argc, const char** argv){
-	// Get stream to output
-	// Can be file, or currently std output
-	std::ostream& output = std::cout;
-	
 	// Check arguments
 	if(argc <= 1 || argc >= 4){
 		help(argc, argv);
@@ -75,33 +70,8 @@ int main(int argc, const char** argv){
 
 	// Test output
 	std::ofstream outfile("test.php");
-	outfile << "<?" << std::endl;
-	AwS::Nodes::TranslateSettings settings;
-
-	try{
-		// Parse everything
-		AwS::Parser* parser = new AwS::Parser(*parsing, output);
-		if(!parser){
-			std::cerr << "Memory Error" << std::endl;
-			return 3;
-		}
-		for(;;){
-			AwS::Nodes::Statement* statement = parser->readStatement();
-			
-			if(statement){
-				statement->translatePhp(outfile, settings);
-				outfile.flush();
-				delete statement;
-			}else
-				break;
-		}
-		// TODO build translator
-		delete parser; parser = NULL;
-	}catch(AwS::Exception e){
-		// Based on exception error code
-		output << "[!] Exception caught: " << e.getId() << std::endl << e.getMessage() << std::endl;
-	}
-	outfile << std::endl << "?>";
+	AwS::Translator translator(*parsing, outfile);
+	translator.translate();
 	outfile.close();
 
 	// close and remove the stream
