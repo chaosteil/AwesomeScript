@@ -1,6 +1,11 @@
-This is the test AwesomeScript translator.
-It currently parses the complete specification of AwS, but does not yet translate the code to php.
+This is the AwesomeScript translator.
 
-This program is made by Dominykas Djacenka, intended to use as the Andechor game scripting engine.
+AwesomeScript is designed to convert awesomescript code (see example,
+it's very similar to javascript) into fully parsable php code.
+This achieves the effect of a sandbox when the code is compiling,
+while not being in one at the same time.
 
-For any questions, please contact me at Chaosteil@gmail.com
+This scripting language is created to let people add own scripts into
+working pages without the system to worry about invalid calls.
+
+If you have any questions, please mail me at Chaosteil@gmail.com
